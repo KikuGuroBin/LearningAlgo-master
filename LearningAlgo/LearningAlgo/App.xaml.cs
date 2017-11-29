@@ -13,7 +13,9 @@ namespace LearningAlgo
 		{
 			InitializeComponent();
 
-			MainPage = new LearningAlgo.MainPage();
+            /* MainPage = new LearningAlgo.MainPage(); */
+
+            MainPage = new NavigationPage(new FlowPage());
 		}
 
 		protected override void OnStart ()

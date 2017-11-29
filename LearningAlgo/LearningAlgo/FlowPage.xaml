@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="LearningAlgo.FlowPage">
+	<ContentPage.Content>
+        <RelativeLayout HorizontalOptions="FillAndExpand"
+            VerticalOptions="FillAndExpand"
+            x:Name="MainLayout">
+            <ScrollView x:Name="FlowScroller">
+                <RelativeLayout x:Name="FlowPanel">
+                </RelativeLayout>
+            </ScrollView>
+            <StackLayout x:Name="UnderMenu"
+                BackgroundColor="#23455678"
+                Orientation="Vertical"
+                VerticalOptions="FillAndExpand"
+                HorizontalOptions="FillAndExpand">
+                <Button TextColor="#12a7eb"
+                    WidthRequest="500"
+                    Text="SideP"
+                    Clicked="SidePanel"/>
+                <Button x:Name="ShowDialog"
+                    Text="Show!!"
+                    Clicked="ShowDialogClicked"/>
+            </StackLayout>
+            <StackLayout x:Name="SidePane"
+                BackgroundColor="#12a7eb">
+                <ScrollView>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Image Grid.Row="0" 
+                            Grid.Column="0"
+                            x:Name="Sq"
+                            Source="Side_Sq.png"
+                            BackgroundColor="Fuchsia">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="ItemTapped"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                        <Image Grid.Row="1" 
+                            Grid.Column="0"
+                            x:Name="Hi"
+                            Source="Side_Hi.png"
+                            BackgroundColor="Green">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="ItemTapped"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                        <Image Grid.Row="2" 
+                            Grid.Column="0"
+                            x:Name="He"
+                            Source="Side_He.png"
+                            BackgroundColor="Maroon">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="ItemTapped"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                        <Image Grid.Row="3" 
+                            Grid.Column="0"
+                            x:Name="Du"
+                            Source="Side_Du.png">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="ItemTapped"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                        <Image Grid.Row="4" 
+                            Grid.Column="0"
+                            Source="Side_Dd.png">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="ItemTapped"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                        <Image Grid.Row="5" 
+                            Grid.Column="0"
+                            Source="Side_Dd.png">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="ItemTapped"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                        <Image Grid.Row="6"
+                            Grid.Column="0"
+                            Source="Side_Dd.png">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="ItemTapped"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                        <Image Grid.Row="7" 
+                            Grid.Column="0"
+                            x:Name="Dd"
+                            Source="Side_Dd.png">
+                            <Image.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="ItemTapped"/>
+                            </Image.GestureRecognizers>
+                        </Image>
+                    </Grid>
+                </ScrollView>
+            </StackLayout>
+            <BoxView x:Name="Shadow"/>
+            <RelativeLayout x:Name="Dialog">
+                <Label Text="Show!!"/>
+            </RelativeLayout>
+        </RelativeLayout>
+	</ContentPage.Content>
+</ContentPage>
