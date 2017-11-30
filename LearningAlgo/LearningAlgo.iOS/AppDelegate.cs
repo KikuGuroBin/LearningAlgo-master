@@ -27,5 +27,22 @@ namespace LearningAlgo.iOS
 
 			return base.FinishedLaunching (app, options);
 		}
+
+        /// <summary>
+        /// 画面の向きを固定する。
+        /// 
+        /// 画面の向きを固定する
+        ///  UIInterfaceOrientationMask.Portrait
+        /// 常に横にする場合
+        ///  UIInterfaceOrientationMask.Landscape
+        /// </summary>
+        /// <returns>The supported interface orientations.</returns>
+        /// <param name="application">Application.</param>
+        /// <param name="forWindow">For window.</param>
+        [Export("application:supportedInterfaceOrientationsForWindow:")]
+        public UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, IntPtr forWindow)
+        {
+            return UIInterfaceOrientationMask.Landscape;
+        }
 	}
 }

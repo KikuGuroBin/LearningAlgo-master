@@ -11,14 +11,19 @@ namespace LearningAlgo
     public partial class FlowPage : ContentPage
     {
         /// <summary>
+        /// カスタムダイアログサイズの定数
+        /// </summary>
+        private const int DIALOGSIZE = 300;
+
+        /// <summary>
         /// カスタムダイアログの表示アニメーションを取り扱う
         /// </summary>
         private ImitationDialog ImitationDialog;
 
         /// <summary>
-        /// 
+        /// フローチャート内の最後尾の図形の座標
         /// </summary>
-        private double FlowPosition;
+        private double ImagePosition;
 
         /// <summary>
         /// OnSizeAllocated制御用
@@ -30,7 +35,7 @@ namespace LearningAlgo
         /// <summary>
         /// 図形選択メニューの表示、非表示フラグ
         /// </summary>
-        private bool PanelShowing;
+        private bool SidePaneShowing;
 
         public FlowPage()
         {
@@ -79,7 +84,11 @@ namespace LearningAlgo
 
         }
 
-        /* 画面サイズが変更されたときのイベント */
+        /// <summary>
+        /// 画面サイズが変更されたときのイベント
+        /// </summary>
+        /// <param name="width">Width.</param>
+        /// <param name="height">Height.</param>
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
@@ -88,6 +97,8 @@ namespace LearningAlgo
             if (FirstOrder)
             {
                 SidePanelHeight = SidePane.Height / 3 * 2;
+
+                SidePane.LayoutTo(new Rectangle(-SidePane.Width, 0, SidePane.Width / 3 * 2, SidePanelHeight));
 
                 /* フローチャートのレイアウト部分のサイズ、座標 */
                 FlowScroller.LayoutTo(new Rectangle(0, 0, width, height / 10 * 9), 0);
@@ -104,6 +115,11 @@ namespace LearningAlgo
                     Dialog = this.Dialog,
                 };
 
+
+
+                FlowPanel.Children.Add(new Label{Text = "label"}, () => new Rectangle(0, 300, 50, 50));
+
+
                 /* 次回以降呼ばれないようにする */
                 FirstOrder = false;
             }
@@ -115,10 +131,10 @@ namespace LearningAlgo
         private async void SideAnimatePanel()
         {
             /* 表示フラグ反転 */
-            PanelShowing = !PanelShowing;
+            SidePaneShowing = !SidePaneShowing;
 
             /* フラグによって表示、非表示にする */
-            if (PanelShowing)
+            if (SidePaneShowing)
             {
                 /* 表示 */
                 await SidePane.LayoutTo(new Rectangle(0, 0, SidePane.Width, SidePanelHeight), 100, Easing.CubicIn);
@@ -138,18 +154,43 @@ namespace LearningAlgo
 
         private void ShowDialogClicked(object sender, EventArgs args)
         {
+            /* カスタムダイアログ表示 */
             ImitationDialog.ShowUp(300);
         }
 
+        private void ShadowTapped(object sender, EventArgs args)
+        {
+            ImitationDialog.Hide();
+        }
+
+        /// <summary>
+        /// 図形選択メニューで図形が選択された時のイベント
+        /// </summary>
+        /// <param name="sender">
+        /// 発火したインスタンス。
+        /// 基本的にはImageが来る
+        /// </param>
+        /// <param name="args">
+        /// Arguments.
+        /// </param>
         private void ItemTapped(object sender, EventArgs args)
         {
-            var image = sender as Image;
+            System.Diagnostics.Debug.WriteLine("deg : FlowPage.ItemTapped");
+
+            /* 選択された画像を取得 */
+            var source = (sender as Image).Source;
+
+            /* ドラッグ可能なImageインスタンス生成 */
+            var myImage = new MyImage
+            {
+                Source = source,
+            };
 
             /* フローチャートのパネルに画像を追加 */
-            FlowPanel.Children.Add(image, () => new Rectangle(FlowPosition, 0, image.WidthRequest, image.HeightRequest));
+            FlowPanel.Children.Add(myImage, () => new Rectangle(0, 0, 10, 10));
 
             /* レイアウトでの最後尾の座標を更新 */
-            FlowPosition += image.HeightRequest;
+            ImagePosition += myImage.HeightRequest;
         }
     }
 }

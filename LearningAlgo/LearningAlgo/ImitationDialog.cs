@@ -18,7 +18,7 @@ namespace LearningAlgo
         /// ダイアログ本体。
         /// ダイアログを呼び出す側で定義して、初期化式等でセットする必要がある
         /// </summary>
-        public RelativeLayout Dialog { get; set; }
+        public ContentView Dialog { get; set; }
 
         /// <summary>
         /// ダイアログ表示アニメーションの座標軸
@@ -55,7 +55,7 @@ namespace LearningAlgo
             /* アニメーションフラグを立てる */
             Moving = true;
 
-            /* ダイアログが表示されていたら隠すアニメーションを実行 */
+            /* ダイアログが表示されていたら非表示アニメーションを実行 */
             if (AxisFlag != 0)
             {
                 Hide();
@@ -83,7 +83,7 @@ namespace LearningAlgo
 
                 rc = Dialog.Bounds;
                 rc.Y -= 10;
-                await Dialog.LayoutTo(rc, 100);
+                await Dialog.LayoutTo(rc, 80);
             }
 
             /* アニメーションフラグをおろす */
@@ -110,7 +110,7 @@ namespace LearningAlgo
             /* アニメーションフラグを立てる */
             Moving = true;
 
-            /* ダイアログが表示されていたら隠すアニメーションを実行 */
+            /* ダイアログが表示されていたら非表示アニメーションを実行 */
             if (AxisFlag != 0)
             {
                 Hide();
@@ -139,7 +139,7 @@ namespace LearningAlgo
 
                 rc = Dialog.Bounds;
                 rc.X -= 10;
-                await Dialog.LayoutTo(rc, 100);
+                await Dialog.LayoutTo(rc, 80);
             }
 
             /* アニメーションフラグをおろす */
@@ -147,7 +147,7 @@ namespace LearningAlgo
         }
 
         /// <summary>
-        /// ダイアログを隠すアニメーション
+        /// ダイアログの非表示アニメーション
         /// </summary>
         public async void Hide()
         {
@@ -166,7 +166,7 @@ namespace LearningAlgo
 
             var rc = Dialog.Bounds;
 
-            /* 隠すアニメーション */
+            /* ダイアログの非表示アニメーション */
             for (var cnt = 0; cnt < 5; cnt++)
             {
                 Dialog.Opacity -= 0.2;
@@ -182,10 +182,10 @@ namespace LearningAlgo
                     rc.X += 10;
                 }
 
-                await Dialog.LayoutTo(rc, 100);
+                await Dialog.LayoutTo(rc, 80);
             }
 
-            /* 影をなくす */
+            /* 影を非表示にする */
             rc = Shadow.Bounds;
             rc.Y = rc.Height;
             await Shadow.LayoutTo(rc, 0);

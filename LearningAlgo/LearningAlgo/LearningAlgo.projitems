@@ -24,6 +24,10 @@
     <Compile Include="$(MSBuildThisFileDirectory)ImitationDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MyImage.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ImageDrugEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)KeyboardDialog.xaml.cs">
+      <DependentUpon>KeyboardDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)ViewBounds.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)MainPage.xaml">
@@ -35,6 +39,10 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)FlowPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)KeyboardDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
