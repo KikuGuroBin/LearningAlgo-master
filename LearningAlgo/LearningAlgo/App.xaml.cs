@@ -11,7 +11,7 @@ namespace LearningAlgo
 	{
 		public App ()
 		{
-			InitializeComponent();
+            InitializeComponent();
 
             /* MainPage = new LearningAlgo.MainPage(); */
 

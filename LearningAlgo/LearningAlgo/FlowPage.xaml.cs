@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using LearningAlgo;
 using Xamarin.Forms;
 
 namespace LearningAlgo
@@ -26,11 +26,9 @@ namespace LearningAlgo
         private double ImagePosition;
 
         /// <summary>
-        /// OnSizeAllocated制御用
+        /// 初回処理用フラグ
         /// </summary>
-        private bool FirstOrder = true;
-
-        private double SidePanelHeight;
+        private bool First = true;
 
         /// <summary>
         /// 図形選択メニューの表示、非表示フラグ
@@ -40,95 +38,60 @@ namespace LearningAlgo
         public FlowPage()
         {
             InitializeComponent();
-
-            /* iOSだけ、上部に余白をとる */
-            /* Padding = new Thickness(0, Device.RuntimePlatform == Device.iOS ? 20 : 0, 0, 0);
-            アイテムをImagesourceFormPageで参照できるようにメンバ変数に格納 */
-
-            // DBにする配列達
-            string[] FlowTable = new string[3];
-            string[] PrintTable = new string[4];
-            string[] KindTable = new string[3];
-
-            // 変数を格納したDBからDictionaryにぶち込む
-            Dictionary<string, int> VarManegement = new Dictionary<string, int>();
-            VarManegement["i"] = 3;
-            VarManegement["j"] = 5;
-            string Shiki;
-
-            /*
-             * □
-             Shiki = "1＋i＋3×j＋i→i";
-            SquareCalculatClass squareCalculat =new SquareCalculatClass();
-            VarManegement = squareCalculat.SquareCalculate(VarManegement,Shiki);
-            System.Diagnostics.Debug.WriteLine("ここ一番で決める:"+VarManegement["i"].ToString());
-            */
-
-
-            /*
-             * ♢
-            Shiki = "1＋i＋3×j＋i≧3＋4";
-            //Symbolは0がNo、1がYes、：が判定
-            DiamondCalculatClass diamondCalculat = new DiamondCalculatClass();
-            (string Symbol,int b,int c) Kekka = diamondCalculat.DiamondCalculat(VarManegement, Shiki);
-            */
-
-            /*
-             * ♢
-            Shiki = "1＋i＋3×j＋i≧3＋4";
-            //Symbolは0がNo、1がYes、：が判定
-            DiamondCalculatClass diamondCalculat = new DiamondCalculatClass();
-            bool Kekka = diamondCalculat.DiamondCalculat(VarManegement, Shiki);
-            */
-
-
         }
 
         /// <summary>
         /// 画面サイズが変更されたときのイベント
         /// </summary>
-        /// <param name="width">Width.</param>
-        /// <param name="height">Height.</param>
+        /// <param name="width">
+        /// Width.
+        /// </param>
+        /// <param name="height">
+        /// Height.
+        /// </param>
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
 
-            /* 初回だけ処理を行う */
-            if (FirstOrder)
+            /* ダイアログ関係のインスタンスを隠す */
+            Shadow.LayoutTo(new Rectangle(0, height, width, height), 0);
+            Dialog.LayoutTo(new Rectangle(200, height, width / 2 - 100, 100), 0);
+
+            /* フローチャートのレイアウト部分を配置 */
+            FlowScroller.LayoutTo(new Rectangle(0, 0, width, height / 10 * 9), 0);
+
+            /* フッターメニューを配置 */
+            Footer.LayoutTo(new Rectangle(0, height / 10 * 9, width, height / 10), 0);
+
+            /* 初回限定の処理 */
+            if (First)
             {
-                SidePanelHeight = SidePane.Height / 3 * 2;
+                /* 図形選択メニューを隠す */
+                SidePane.LayoutTo(new Rectangle(-(width / 4), 0, width / 4, height), 0);
 
-                SidePane.LayoutTo(new Rectangle(-SidePane.Width, 0, SidePane.Width / 3 * 2, SidePanelHeight));
-
-                /* フローチャートのレイアウト部分のサイズ、座標 */
-                FlowScroller.LayoutTo(new Rectangle(0, 0, width, height / 10 * 9), 0);
-                FlowPanel.LayoutTo(new Rectangle(0, 0, width, height / 10 * 9), 0);
-
-                UnderMenu.LayoutTo(new Rectangle(0, height / 10 * 9, width, height / 10), 0);
-
-                /* ダイアログ関係のインスタンスを隠す */
-                Shadow.LayoutTo(new Rectangle(0, height, width, height), 0);
-                Dialog.LayoutTo(new Rectangle(200, height, width / 2 - 100, 100), 0);
+                /* カスタムダイアログ表示制御用インスタンスに格納 */
                 ImitationDialog = new ImitationDialog
                 {
                     Shadow = this.Shadow,
                     Dialog = this.Dialog,
                 };
 
+                First = false;
+            }
+            else
+            {
+                /* 図形選択メニューを隠す */
+                SidePane.LayoutTo(new Rectangle(-(width / 4), 0, width / 4, height), 200, Easing.CubicOut);
+                FlowScroller.LayoutTo(new Rectangle(0, 0, Width, Height - Height / 10), 200, Easing.CubicOut);
 
-
-                FlowPanel.Children.Add(new Label{Text = "label"}, () => new Rectangle(0, 300, 50, 50));
-
-
-                /* 次回以降呼ばれないようにする */
-                FirstOrder = false;
+                SidePaneShowing = !SidePaneShowing;
             }
         }
 
         /// <summary>
         /// 図形選択メニューの表示、非表示する
         /// </summary>
-        private async void SideAnimatePanel()
+        private async void SidePanelShow()
         {
             /* 表示フラグ反転 */
             SidePaneShowing = !SidePaneShowing;
@@ -137,19 +100,38 @@ namespace LearningAlgo
             if (SidePaneShowing)
             {
                 /* 表示 */
-                await SidePane.LayoutTo(new Rectangle(0, 0, SidePane.Width, SidePanelHeight), 100, Easing.CubicIn);
+                await SidePane.LayoutTo(new Rectangle(0, 0, Width / 4, Height - Height / 10), 200, Easing.CubicIn);
             }
             else
             {
                 /* 非表示 */
-                await SidePane.LayoutTo(new Rectangle(0 - SidePane.Width, 0, SidePane.Width, SidePanelHeight), 50, Easing.CubicOut);
+                await SidePane.LayoutTo(new Rectangle(-(Width / 4), 0, Width / 4, Height - Height / 10), 200, Easing.CubicOut);
+            }
+        }
+
+        /// <summary>
+        /// フローチャートのパネルをスライドさせる
+        /// </summary>
+        private async void FlowScrollerSlide()
+        {
+            /* フラグによってスライドの方向を変える */
+            if (SidePaneShowing)
+            {
+                /* 右へスライド */
+                await FlowScroller.LayoutTo(new Rectangle(Width / 4, 0, Width - Width / 4, Height - Height / 10), 200, Easing.CubicIn);
+            }
+            else
+            {
+                /* 左へスライド */
+                await FlowScroller.LayoutTo(new Rectangle(0, 0, Width, Height - Height / 10), 200, Easing.CubicOut);
             }
         }
 
         /* サイドラベルタップ用のイベント */
         private void SidePanel(object sender, EventArgs args)
         {
-            SideAnimatePanel();
+            SidePanelShow();
+            FlowScrollerSlide();
         }
 
         private void ShowDialogClicked(object sender, EventArgs args)
@@ -175,8 +157,6 @@ namespace LearningAlgo
         /// </param>
         private void ItemTapped(object sender, EventArgs args)
         {
-            System.Diagnostics.Debug.WriteLine("deg : FlowPage.ItemTapped");
-
             /* 選択された画像を取得 */
             var source = (sender as Image).Source;
 
@@ -187,10 +167,10 @@ namespace LearningAlgo
             };
 
             /* フローチャートのパネルに画像を追加 */
-            FlowPanel.Children.Add(myImage, () => new Rectangle(0, 0, 10, 10));
+            FlowPanel.Children.Add(myImage, new Rectangle(0, ImagePosition, 50, 50));
 
             /* レイアウトでの最後尾の座標を更新 */
-            ImagePosition += myImage.HeightRequest;
+            ImagePosition += 50;
         }
     }
 }

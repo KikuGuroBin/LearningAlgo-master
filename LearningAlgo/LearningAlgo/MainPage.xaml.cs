@@ -11,7 +11,7 @@ namespace LearningAlgo
 	{
 		public MainPage()
 		{
-			InitializeComponent();
+            InitializeComponent(); 
 
             // 画面遷移
             Navigation.PushAsync(new Test1());
