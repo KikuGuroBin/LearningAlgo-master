@@ -23,7 +23,7 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)ImitationDialog.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MyImage.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ImageDrugEventArgs.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DrugEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)KeyboardDialog.xaml.cs">
       <DependentUpon>KeyboardDialog.xaml</DependentUpon>
     </Compile>
@@ -31,7 +31,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MasterPanel.xaml.cs">
       <DependentUpon>MasterPanel.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)IAbsoluteLayout.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FlowParts.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)MainPage.xaml">

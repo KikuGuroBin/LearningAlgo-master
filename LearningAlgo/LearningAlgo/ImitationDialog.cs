@@ -68,12 +68,12 @@ namespace LearningAlgo
             /* ダイアログを指定座標まで移動 */
             var rc = Dialog.Bounds;
             rc.Y = y - 50;
-            await Dialog.LayoutTo(rc, 0);
+            await Dialog.TranslateTo(rc.X, rc.Y, 0);
 
             /* 影表示 */
             rc = Shadow.Bounds;
             rc.Y = 0;
-            await Shadow.LayoutTo(rc, 0);
+            await Shadow.TranslateTo(rc.X, 0, 0);
 
             /* アニメーション */
             for (int cnt = 0, i = up ? 1 : -1; cnt < 5; cnt += i)
@@ -160,10 +160,6 @@ namespace LearningAlgo
             /* アニメーションフラグを立てる */
             Moving = true;
 
-            /* フラグ初期化 */
-            AxisFlag = 0;
-            DirectionFlag = 0;
-
             var rc = Dialog.Bounds;
 
             /* ダイアログの非表示アニメーション */
@@ -187,8 +183,13 @@ namespace LearningAlgo
 
             /* 影を非表示にする */
             rc = Shadow.Bounds;
-            rc.Y = rc.Height;
-            await Shadow.LayoutTo(rc, 0);
+            await Shadow.TranslateTo(rc.X, rc.Height, 0);
+
+            await Dialog.TranslateTo(Dialog.Bounds.X, rc.Y, 0);
+
+            /* フラグ初期化 */
+            AxisFlag = 0;
+            DirectionFlag = 0;
 
             /* アニメーションフラグをおろす */
             Moving = false;

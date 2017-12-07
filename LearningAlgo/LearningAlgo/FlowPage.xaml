@@ -16,7 +16,7 @@
             </ScrollView>
             <StackLayout x:Name="Footer"
                          BackgroundColor="#23455678"
-                         Orientation="Vertical"
+                         Orientation="Horizontal"
                          VerticalOptions="FillAndExpand"
                          HorizontalOptions="FillAndExpand">
                 <Button TextColor="#12a7eb"
@@ -114,7 +114,6 @@
                 </ScrollView>
             </StackLayout>
             <BoxView x:Name="Shadow"
-                     Opacity="0"
                      BackgroundColor="Gray">
                 <BoxView.GestureRecognizers>
                     <TapGestureRecognizer Tapped="ShadowTapped"/>

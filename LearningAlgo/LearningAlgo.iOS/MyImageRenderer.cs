@@ -33,19 +33,19 @@ namespace LearningAlgo.iOS
             base.TouchesMoved(touches, evt);
             UITouch touch = touches.AnyObject as UITouch;
 
-            // MyImageインスタンスの現在の座標
+            /* MyImageインスタンスの現在の座標 */
             var newPoint = touch.LocationInView(this);
 
-            // MyImageインスタンスの前回の座標
+            /* MyImageインスタンスの前回の座標 */
             var previousPoint = touch.PreviousLocationInView(this);
 
-            // 差分を計算
+            /* 差分を計算 */
             nfloat dx = newPoint.X - previousPoint.X;
             nfloat dy = newPoint.Y - previousPoint.Y;
 
-            // コールバック
+            /* コールバック */
             var el = this.Element as MyImage;
-            el.OnImageDrug(el, new ImageDrugEventArgs(el, dx, dy));
+            el.OnImageDrug(el, new DrugEventArgs(el, dx, dy));
         }
 
         public override void TouchesEnded(NSSet touches, UIEvent evt)

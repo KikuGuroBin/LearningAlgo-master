@@ -53,21 +53,36 @@ namespace LearningAlgo
         {
             base.OnSizeAllocated(width, height);
 
-            /* ダイアログ関係のインスタンスを隠す */
-            Shadow.LayoutTo(new Rectangle(0, height, width, height), 0);
-            Dialog.LayoutTo(new Rectangle(200, height, width / 2 - 100, 100), 0);
-
-            /* フローチャートのレイアウト部分を配置 */
-            FlowScroller.LayoutTo(new Rectangle(0, 0, width, height / 10 * 9), 0);
-
-            /* フッターメニューを配置 */
-            Footer.LayoutTo(new Rectangle(0, height / 10 * 9, width, height / 10), 0);
+            Shadow.Opacity = 0;
+            Dialog.Opacity = 0;
+            SidePane.Opacity = 0;
 
             /* 初回限定の処理 */
             if (First)
             {
+                /* ダイアログ関係のインスタンスを隠す */
+                Shadow.TranslateTo(0, height, 0);
+                Shadow.WidthRequest = width;
+                Shadow.HeightRequest = height;
+
+                Dialog.TranslateTo(width / 2, height, 0);
+                Dialog.WidthRequest = DIALOGSIZE;
+                Dialog.HeightRequest = DIALOGSIZE;
+
+                /* フローチャートのレイアウト部分を配置 */
+                FlowScroller.TranslateTo(0, 0, 0);
+                FlowScroller.WidthRequest = width;
+                FlowScroller.HeightRequest = height / 10 * 9;
+
+                /* フッターメニューを配置 */
+                Footer.TranslateTo(0, height / 10 * 9, 0);
+                Footer.WidthRequest = width;
+                Footer.HeightRequest = height / 10;
+
                 /* 図形選択メニューを隠す */
-                SidePane.LayoutTo(new Rectangle(-(width / 4), 0, width / 4, height), 0);
+                SidePane.TranslateTo(-(width / 4), 0, 0);
+                SidePane.WidthRequest = width / 4;
+                SidePane.HeightRequest = height - height / 10;
 
                 /* カスタムダイアログ表示制御用インスタンスに格納 */
                 ImitationDialog = new ImitationDialog
@@ -81,11 +96,12 @@ namespace LearningAlgo
             else
             {
                 /* 図形選択メニューを隠す */
-                SidePane.LayoutTo(new Rectangle(-(width / 4), 0, width / 4, height), 200, Easing.CubicOut);
-                FlowScroller.LayoutTo(new Rectangle(0, 0, Width, Height - Height / 10), 200, Easing.CubicOut);
+                //SidePane.LayoutTo(new Rectangle(-(width / 4), 0, width / 4, height), 200, Easing.CubicOut);
 
-                SidePaneShowing = !SidePaneShowing;
+                //SidePaneShowing = !SidePaneShowing;
             }
+
+            SidePane.Opacity = 1;
         }
 
         /// <summary>
@@ -100,12 +116,12 @@ namespace LearningAlgo
             if (SidePaneShowing)
             {
                 /* 表示 */
-                await SidePane.LayoutTo(new Rectangle(0, 0, Width / 4, Height - Height / 10), 200, Easing.CubicIn);
+                await SidePane.TranslateTo(0, 0, 200, Easing.CubicIn);
             }
             else
             {
                 /* 非表示 */
-                await SidePane.LayoutTo(new Rectangle(-(Width / 4), 0, Width / 4, Height - Height / 10), 200, Easing.CubicOut);
+                await SidePane.TranslateTo(-(Width / 4), 0, 200, Easing.CubicOut);
             }
         }
 
@@ -118,12 +134,14 @@ namespace LearningAlgo
             if (SidePaneShowing)
             {
                 /* 右へスライド */
-                await FlowScroller.LayoutTo(new Rectangle(Width / 4, 0, Width - Width / 4, Height - Height / 10), 200, Easing.CubicIn);
+                await FlowScroller.TranslateTo(Width / 4, 0, 200, Easing.CubicIn);
+                                              // Width - Width / 4, Height - Height / 10)
             }
             else
             {
                 /* 左へスライド */
-                await FlowScroller.LayoutTo(new Rectangle(0, 0, Width, Height - Height / 10), 200, Easing.CubicOut);
+                await FlowScroller.TranslateTo(0, 0, 200, Easing.CubicOut);
+                //Width, Height - Height / 10
             }
         }
 
@@ -163,11 +181,15 @@ namespace LearningAlgo
             /* ドラッグ可能なImageインスタンス生成 */
             var myImage = new MyImage
             {
+                TranslationX = 0,
+                TranslationY = ImagePosition,
+                WidthRequest = 50,
+                HeightRequest = 50,
                 Source = source,
             };
 
             /* フローチャートのパネルに画像を追加 */
-            FlowPanel.Children.Add(myImage, new Rectangle(0, ImagePosition, 50, 50));
+            FlowPanel.Children.Add(myImage);
 
             /* レイアウトでの最後尾の座標を更新 */
             ImagePosition += 50;

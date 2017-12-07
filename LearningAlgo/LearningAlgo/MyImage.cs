@@ -6,7 +6,7 @@ namespace LearningAlgo
     public class MyImage : Image
     {
         // インスタンスがドラッグされたときのイベント
-        public void OnImageDrug(object sender, ImageDrugEventArgs args)
+        public void OnImageDrug(object sender, DrugEventArgs args)
         {
             var rc = this.Bounds;
 

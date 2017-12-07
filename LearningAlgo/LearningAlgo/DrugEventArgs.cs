@@ -2,21 +2,21 @@
 namespace LearningAlgo
 {
     /// <summary>
-    /// 画像ドラッグ時にレンダラーからのコールバックに用いる
+    /// ドラッグ時にレンダラーからのコールバックに用いる
     /// </summary>
-    public class ImageDrugEventArgs
+    public class DrugEventArgs
     {
         /// <summary>
-        /// MyImageインスタンスのX座標
+        /// インスタンスのX座標
         /// </summary>
         public double X;
 
         /// <summary>
-        /// MyImageインスタンスのY座標
+        /// インスタンスのY座標
         /// </summary>
         public double Y;
 
-        public ImageDrugEventArgs(object sender, double x, double y)
+        public DrugEventArgs(object sender, double x, double y)
         {
             X = x;
             Y = y;
