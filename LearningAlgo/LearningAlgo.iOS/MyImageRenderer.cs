@@ -45,7 +45,7 @@ namespace LearningAlgo.iOS
 
             /* コールバック */
             var el = this.Element as MyImage;
-            el.OnImageDrug(el, new DrugEventArgs(el, dx, dy));
+            el.Drug(el, new DrugEventArgs(el, dx, dy));
         }
 
         public override void TouchesEnded(NSSet touches, UIEvent evt)

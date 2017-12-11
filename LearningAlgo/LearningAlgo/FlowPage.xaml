@@ -20,13 +20,33 @@
                          VerticalOptions="FillAndExpand"
                          HorizontalOptions="FillAndExpand">
                 <Button TextColor="#12a7eb"
-                        WidthRequest="500"
+                        WidthRequest="50"
                         Text="SideP"
                         Clicked="SidePanel"/>
                 <Button x:Name="ShowDialog"
                         Text="Show!!"
                         Clicked="ShowDialogClicked"/>
+                <Button x:Name="TraceDo"
+                        Text="トレースの呼び出しボタン"
+                        Clicked="TraceDoCliked"/>
             </StackLayout>
+
+            <StackLayout VerticalOptions="FillAndExpand">
+                    <ScrollView x:Name="PrisetScroll">  
+                        <StackLayout  x:Name="Priset"/>
+                    </ScrollView>
+                        <Label x:Name="label1"
+                           Text="i:   0"/>
+                    <Label x:Name="label2"
+                           Text="j:   0"/>
+                    <Label x:Name="label3"
+                           Text="プリセットよめ"/>
+                    <ScrollView>
+                        <Label x:Name="label4"
+                           Text=""/>
+                    </ScrollView>
+                </StackLayout>
+            
             <StackLayout x:Name="SidePane"
                          BackgroundColor="#12a7eb"
                          WidthRequest="100"
@@ -49,7 +69,7 @@
                         <Image Grid.Row="0" 
                                Grid.Column="0"
                                x:Name="Sq"
-                               Source="SideHishi.png"
+                               Source="SideHisigata.png"
                                BackgroundColor="Fuchsia">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="ItemTapped"/>
@@ -58,7 +78,7 @@
                         <Image Grid.Row="1" 
                                Grid.Column="0"
                                x:Name="Hi"
-                               Source="SideHishi.png"
+                               Source="SideHisigata.png"
                                BackgroundColor="Green">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="ItemTapped"/>
@@ -67,7 +87,7 @@
                         <Image Grid.Row="2" 
                                Grid.Column="0"
                                x:Name="He"
-                               Source="SideHishi.png"
+                               Source="SideHisigata.png"
                                BackgroundColor="Maroon">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="ItemTapped"/>
@@ -76,28 +96,28 @@
                         <Image Grid.Row="3" 
                                Grid.Column="0"
                                x:Name="Du"
-                               Source="SideHishi.png">
+                               Source="SideHisigata.png">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="ItemTapped"/>
                             </Image.GestureRecognizers>
                         </Image>
                         <Image Grid.Row="4" 
                                Grid.Column="0"
-                               Source="SideHishi.png">
+                               Source="SideHisigata.png">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="ItemTapped"/>
                             </Image.GestureRecognizers>
                         </Image>
                         <Image Grid.Row="5" 
                                Grid.Column="0"
-                               Source="SideHishi.png">
+                               Source="SideHisigata.png">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="ItemTapped"/>
                             </Image.GestureRecognizers>
                         </Image>
                         <Image Grid.Row="6"
                                Grid.Column="0"
-                               Source="SideHishi.png">
+                               Source="SideHisigata.png">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="ItemTapped"/>
                             </Image.GestureRecognizers>
@@ -105,7 +125,7 @@
                         <Image Grid.Row="7" 
                                Grid.Column="0"
                                x:Name="Dd"
-                               Source="SideHishi.png">
+                               Source="SideHisigata.png">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="ItemTapped"/>
                             </Image.GestureRecognizers>
@@ -120,7 +140,6 @@
                 </BoxView.GestureRecognizers>
             </BoxView>
             <local:KeyboardDialog x:Name="Dialog">
-                <Label Text="Show!!"/>
             </local:KeyboardDialog>
         </AbsoluteLayout>
     </ContentPage.Content>

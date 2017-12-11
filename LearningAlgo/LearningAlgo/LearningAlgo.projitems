@@ -32,6 +32,12 @@
       <DependentUpon>MasterPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)FlowParts.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MyAbsoluteLayout.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PartsLoadClass.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PresetLoadClass.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TableClass.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DBConnection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)CalculateClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)MainPage.xaml">
