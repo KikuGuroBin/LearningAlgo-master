@@ -61,11 +61,10 @@ namespace LearningAlgo
     //    public string identification_id { get; set; }
     //    public string blanch_flag { get; set; }
     //    /*
-    //        -1→no
-    //        0→yes
-    //        1→1
-    //        2→2
-    //        3→3
+    //        -1→no 台形も同じ
+    //        0→yes台形も同じ
+    //        1→1 左
+    //        2→2 右
     //     */
     //    public string output_identification_id { get; set; }
     //}

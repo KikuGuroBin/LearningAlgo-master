@@ -14,7 +14,7 @@ namespace LearningAlgo
         string LeftArithExpression;
         string JudgeSymbol;
 
-
+        /*ひし形の計算*/
         public (string, int, int) DiamondCalculat(Dictionary<string, int> VarManagement, string ArithExpression)
         {
             NumberStack = new Stack<int>();
@@ -72,6 +72,7 @@ namespace LearningAlgo
             return ("", 0, 0);
         }
 
+        /*ひし形の出力先の選択*/
         private (string, int, int) JudgeTorF(int before, int after, string JudgeSymbol)
         {
             if (JudgeSymbol == "＞")
@@ -128,6 +129,7 @@ namespace LearningAlgo
 
         }
 
+        /*ひし*/
         public string DiamondSeparateCalculate(Dictionary<string, int> VarManagement, string ArithExpression)
         {
             NumberStack = new Stack<int>();
@@ -235,7 +237,7 @@ namespace LearningAlgo
         }
 
 
-
+        /*台形の計算*/
         public bool TrapezoidCalculat(Dictionary<string, int> VarManagement, string ArithExpression)
         {
             NumberStack = new Stack<int>();
@@ -247,8 +249,7 @@ namespace LearningAlgo
                 if (rorl == 0)
                 {
 
-                    if (stackText[lengthcount].ToString() == "：" ||
-                        stackText[lengthcount].ToString() == "＞" ||
+                    if (stackText[lengthcount].ToString() == "＞" ||
                         stackText[lengthcount].ToString() == "＜" ||
                         stackText[lengthcount].ToString() == "≧" ||
                         stackText[lengthcount].ToString() == "≦" ||
@@ -283,6 +284,7 @@ namespace LearningAlgo
 
         }
 
+        /*ひし形の出力先の選択*/
         private bool JudgeTorF2(int before, int after, string JudgeSymbol)
         {
             if (JudgeSymbol == "＞")
@@ -339,12 +341,7 @@ namespace LearningAlgo
 
         }
 
-
-
-
-
-
-        // ”□”の場合
+        /* ”□”の場合 */
         public Dictionary<string, int> SquareCalculate(Dictionary<string, int> VarManagement, string ArithExpression)
         {
 
@@ -463,13 +460,7 @@ namespace LearningAlgo
 
         }
 
-
-
-
-
-
-
-
+        /*計算部分*/
         public void CalculationMethod()
         {
 
@@ -524,10 +515,10 @@ namespace LearningAlgo
 
             }
         }
+
+        /*平行四辺形の判定*/
         public string ParallelogramOutput(string OutData)
         {
-
-
             return OutData.Substring(0, 1);
         }
     }

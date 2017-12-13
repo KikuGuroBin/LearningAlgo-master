@@ -394,6 +394,7 @@ namespace LearningAlgo
             
             string NextId = await TypeCalculate(DbInsertListTb2[String.Concat(StartPossition)]);
 
+
             /* トレース始めます */
             for (;;)
             {
@@ -421,8 +422,7 @@ namespace LearningAlgo
         /// <param name="PartsTb">Parts tb.</param>
         public async Task<string> TypeCalculate(FlowPartstable PartsTb)
         {
-
-            /*形状四角のばあい*/
+            /*形状四角*/
             if (PartsTb.type_id.Equals("SideSikaku.png"))
             {
                 VarManegement = new CalculateClass().SquareCalculate(VarManegement, PartsTb.data);
@@ -452,6 +452,8 @@ namespace LearningAlgo
 
                 return DbInsertListTb3[StartPossition2.First()].output_identification_id;
             }
+
+            /*形状ひし形*/
             else if (PartsTb.type_id.Equals("SideHisigata.png"))
             {
                 (string Symbol, int b, int c) JudgAnsower = new CalculateClass().DiamondCalculat(VarManegement, PartsTb.data);
@@ -459,13 +461,25 @@ namespace LearningAlgo
                 int before = JudgAnsower.b;
                 int after = JudgAnsower.c;
 
-                Debug.WriteLine("台形返還アイテム： " + Symbol + before + after);
+                Debug.WriteLine("hisigata返還アイテム： " + Symbol + before + after);
 
                 if (Symbol == ":")
                 {
+                    if (before == after)
+                    {
+                        Symbol = "-1";
+                    }
+                    else if (before > after)
+                    {
+                        Symbol = "1";
+                    }
+                    else
+                    {
+                        Symbol = "2";
+                    }
 
                 }
-                else if (Symbol == "-1")
+                if (Symbol == "-1")
                 {
 
                     /* 表示用 */
@@ -500,7 +514,7 @@ namespace LearningAlgo
                                        where x.Value.identification_id == PartsTb.identification_id
                                           && x.Value.blanch_flag == "0"
                                        select x.Value.output_identification_id;
-                    
+
                     await Task.Run(() =>
                     {
                         Device.BeginInvokeOnMainThread(() =>
@@ -515,19 +529,133 @@ namespace LearningAlgo
 
                     return String.Concat(NextIdFinder.First());
                 }
+                else if (Symbol.Equals("1"))
+                {
+                    /* 表示用 */
+                    await LabelInserter(PartsTb);
+
+                    var NextIdFinder = from x in DbInsertListTb3
+                                       where x.Value.identification_id == PartsTb.identification_id
+                                          && x.Value.blanch_flag == "1"
+                                       select x.Value.output_identification_id;
+
+                    await Task.Run(() =>
+                    {
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            TraceLabel.Text = TraceLabel.Text + ">" + "\n";
+                        });
+
+                        Thread.Sleep(1000);
+                    });
+
+                    Debug.WriteLine(": >場合(1)の時のリターン値：　" + NextIdFinder.First());
+                    return String.Concat(NextIdFinder.First());
+                }
+                else if (Symbol.Equals("2"))
+                {
+                    /* 表示用 */
+                    await LabelInserter(PartsTb);
+
+                    var NextIdFinder = from x in DbInsertListTb3
+                                       where x.Value.identification_id == PartsTb.identification_id
+                                          && x.Value.blanch_flag == "2"
+                                       select x.Value.output_identification_id;
+
+                    await Task.Run(() =>
+                    {
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            TraceLabel.Text = TraceLabel.Text + "<" + "\n";
+                        });
+
+                        Thread.Sleep(1000);
+                    });
+
+                    Debug.WriteLine(": <場合(1)の時のリターン値：　" + NextIdFinder.First());
+
+                    return String.Concat(NextIdFinder.First());
+                }
             }
-            else if (PartsTb.type_id == "SideDaikeiUe.png")
+
+            /*形状台形*/
+            else if (PartsTb.type_id.Equals("SideDaikeiUe.png") || PartsTb.type_id.Equals("SideDaikeiSita.png"))
             {
+                if (!PartsTb.data.Equals(""))
+                {
+                    (string Symbol, int b, int c) JudgAnsower = new CalculateClass().DiamondCalculat(VarManegement, PartsTb.data);
+                    string Symbol = JudgAnsower.Symbol;
+                    int before = JudgAnsower.b;
+                    int after = JudgAnsower.c;
+                    if (Symbol == "-1")
+                    {
+                        /* 表示用 */
+                        await LabelInserter(PartsTb);
+                        var NextIdFinder = from x in DbInsertListTb3
+                                           where x.Value.identification_id == PartsTb.identification_id
+                                              && x.Value.blanch_flag == "-1"
+                                           select x.Value.output_identification_id;
+                        await Task.Run(() =>
+                        {
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                TraceLabel.Text = TraceLabel.Text + "No" + "\n";
+                            });
+
+                            Thread.Sleep(1000);
+                        });
+                        Debug.WriteLine("Noだった場合(-1)の時のリターン値：　" + NextIdFinder.First());
+                        return String.Concat(NextIdFinder.First());
+                    }
+                    else if (Symbol.Equals("0"))
+                    {
+                        /* 表示用 */
+                        await LabelInserter(PartsTb);
+                        var NextIdFinder = from x in DbInsertListTb3
+                                           where x.Value.identification_id == PartsTb.identification_id
+                                              && x.Value.blanch_flag == "0"
+                                           select x.Value.output_identification_id;
+                        await Task.Run(() =>
+                        {
+                            Device.BeginInvokeOnMainThread(() =>
+                            {
+                                TraceLabel.Text = TraceLabel.Text + "Yes" + "\n";
+                            });
+
+                            Thread.Sleep(1000);
+                        });
+                        Debug.WriteLine("Yesだった場合(0)の時のリターン値：　" + NextIdFinder.First());
+                        return String.Concat(NextIdFinder.First());
+                    }
+                }
+                else
+                {
+                    var NextIdFinder = from x in DbInsertListTb3
+                                       where x.Value.identification_id == PartsTb.identification_id
+                                          && x.Value.blanch_flag == "0"
+                                       select x.Value.output_identification_id;
+                    await Task.Run(() =>
+                    {
+                        Device.BeginInvokeOnMainThread(() =>
+                        {
+                            TraceLabel.Text = TraceLabel.Text + "Yes" + "\n";
+                        });
+
+                        Thread.Sleep(1000);
+                    });
+                    Debug.WriteLine("Yesだった場合(0)の時のリターン値：　" + NextIdFinder.First());
+                    return String.Concat(NextIdFinder.First());
+                }
+
             }
-            else if (PartsTb.type_id == "SideDaikeiSita.png")
-            {
-            }
+
+            /*形状平行四辺形*/
             else if (PartsTb.type_id == "SideHeikou.png")
             {
                 var NextIdFinder = from x in DbInsertListTb3
                                    where x.Value.identification_id == PartsTb.identification_id
                                    select x.Value.output_identification_id;
-                
+
                 var Output = from x in DbInsertListTb2
                              where x.Value.identification_id == PartsTb.identification_id
                              select x.Value.data;
