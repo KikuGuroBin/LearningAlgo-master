@@ -58,12 +58,12 @@ namespace LearningAlgo
         /// <summary>
         /// 各プリセットの中身用テーブルパーツID,各テーブルの中身(パーツIDとか式とか)
         /// </summary>
-        Dictionary<string, FlowPartstable> DbInsertListTb2 = new Dictionary<string, FlowPartstable>();
+        Dictionary<string, FlowPartstable> DbInsertListTb2;
 
         /// <summary>
         /// 各パーツの中身用テーブルパーツID,各テーブルの中身(パーツIDとか出力先)
         /// </summary>
-        Dictionary<string, Outputtable> DbInsertListTb3 = new Dictionary<string, Outputtable>();
+        Dictionary<string, Outputtable> DbInsertListTb3;
 
         /// <summary>
         /// iとかjとか
@@ -293,6 +293,9 @@ namespace LearningAlgo
             position_y
             startFlag
             */
+            /*別のプリセット読み込んだ時初期化用*/
+            FlowPanel.Children.Clear();
+            ImageList.Clear();
 
             foreach (var flow in array){
                 var x = double.Parse(flow.position_x) + 50;
@@ -330,7 +333,6 @@ namespace LearningAlgo
 
                 /* 管理用リストに追加 */
                 ImageList.Add(flow.identification_id, myLabel);
-
                 /* フローチャートのパネルに画像を追加 */
                 FlowPanel.Children.Add(myImage);
 
@@ -374,15 +376,11 @@ namespace LearningAlgo
         {
             /* 選択後第弐テーブルを読み込んで配置する */
             PartsLoadClass ParClass = new PartsLoadClass();
-
-            (DbInsertListTb2, DbInsertListTb3) = await ParClass.OnAppearing(Tb1Id);
-
-            var PartsTable = from o in DbInsertListTb2.Values
-                             select o;
-                                                               
-            FlowLoad(PartsTable.ToArray());
-
             Debug.WriteLine("プリセット読み込みメソッド：");
+            DbInsertListTb2 = new Dictionary<string, FlowPartstable>();
+            DbInsertListTb3 = new Dictionary<string, Outputtable>();
+            (DbInsertListTb2, DbInsertListTb3) = await ParClass.OnAppearing(Tb1Id);
+            FlowLoad((from o in DbInsertListTb2.Values select o).ToArray());
         }
 
         public async void TracePreviewer()
@@ -599,7 +597,7 @@ namespace LearningAlgo
                         {
                             Device.BeginInvokeOnMainThread(() =>
                             {
-                                TraceLabel.Text = TraceLabel.Text + "No" + "\n";
+                                TraceLabel.Text = TraceLabel.Text + "継続" + "\n";
                             });
 
                             Thread.Sleep(1000);
@@ -619,7 +617,7 @@ namespace LearningAlgo
                         {
                             Device.BeginInvokeOnMainThread(() =>
                             {
-                                TraceLabel.Text = TraceLabel.Text + "Yes" + "\n";
+                                TraceLabel.Text = TraceLabel.Text + "終了" + "\n";
                             });
 
                             Thread.Sleep(1000);
@@ -630,20 +628,24 @@ namespace LearningAlgo
                 }
                 else
                 {
+
+
                     var NextIdFinder = from x in DbInsertListTb3
                                        where x.Value.identification_id == PartsTb.identification_id
                                           && x.Value.blanch_flag == "0"
                                        select x.Value.output_identification_id;
+                    /*
                     await Task.Run(() =>
                     {
                         Device.BeginInvokeOnMainThread(() =>
                         {
-                            TraceLabel.Text = TraceLabel.Text + "Yes" + "\n";
+                            TraceLabel.Text = TraceLabel.Text + "スルーパス" + "\n";
                         });
 
                         Thread.Sleep(1000);
                     });
                     Debug.WriteLine("Yesだった場合(0)の時のリターン値：　" + NextIdFinder.First());
+                    */
                     return String.Concat(NextIdFinder.First());
                 }
 

@@ -34,7 +34,8 @@
 
             
             <StackLayout VerticalOptions="FillAndExpand"
-                TranslationX="300">
+                TranslationX="300"
+                WidthRequest="100">
                 <ScrollView x:Name="PrisetScroll">  
                     <StackLayout  x:Name="Priset"/>
                 </ScrollView>
@@ -43,7 +44,7 @@
                     <Label x:Name="JLabel"
                            Text="j:   0"/>
                     <Label x:Name="MassageLabel"
-                           Text="プリセットよめ"/>
+                           Text="プリセットを読み込んで下さい"/>
                 <ScrollView>
                     <Label x:Name="TraceLabel"
                            Text=""/>
