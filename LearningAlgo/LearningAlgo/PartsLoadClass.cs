@@ -24,13 +24,13 @@ namespace LearningAlgo
         public async Task<(Dictionary<string, FlowPartstable>, Dictionary<string, Outputtable>)> OnAppearing(string Tb1ID)
         {
             using (var connection = await CreateConnection())
-            // DBへのコネクションを取得してくるConnection())
+                
+            /* DBへのコネクションを取得してくるConnection()) */
             {
                 ParTb = new Dictionary<string, FlowPartstable>();
                 OutTb = new Dictionary<string, Outputtable>();
 
-
-                /*パーツの中身テーブル*/
+                /* パーツの中身テーブル */
                 foreach (var preset in from x in connection.Table<FlowPartsTable>()
                                        where x.flow_id == Tb1ID
                                        select x)
@@ -58,15 +58,13 @@ namespace LearningAlgo
 
                 int i = 0;
 
-
-
-
-                /*出力先テーブル
-                 * 出力先テーブルののみキーは格納準*/
-
+                /*
+                 * 出力先テーブル
+                 * 出力先テーブルののみキーは格納順
+                 */
                 foreach (var preset in list)
                 {
-                    /*preset.identification_id*/
+                    /* preset.identification_id */
                     OutTb[i.ToString()] = new Outputtable
                     {
                         flow_id = preset.flow_id,
@@ -83,21 +81,19 @@ namespace LearningAlgo
             return (ParTb, OutTb);
         }
 
-
-
-
-
         public async Task<SQLiteConnection> CreateConnection()
         {
-            //
             const string DatabasesFileName = "DB_TestFile.db3";
-            //ルートフォルダの取得を行う
+
+            /* ルートフォルダの取得を行う */
             IFolder rootFolder = FileSystem.Current.LocalStorage;
-            //DBファイルの存在をチェックする
+
+            /* DBファイルの存在をチェックする */
             var result = await rootFolder.CheckExistsAsync(DatabasesFileName);
+
             if (result == ExistenceCheckResult.NotFound)
             {
-                //存在しなかった場合に限り、新たにファイル作成とテーブル作成を新規に行う
+                /* 存在しなかった場合に限り、新たにファイル作成とテーブル作成を新規に行う */
                 IFile file = await rootFolder.CreateFileAsync(DatabasesFileName, CreationCollisionOption.ReplaceExisting);
                 var connection = new SQLiteConnection(file.Path);
 
@@ -109,10 +105,12 @@ namespace LearningAlgo
             }
             else
             {
-                //ファイルが存在する場合はそのままコネクションの作成を行う
+                /* ファイルが存在する場合はそのままコネクションの作成を行う */
                 IFile file = await rootFolder.CreateFileAsync(DatabasesFileName, CreationCollisionOption.OpenIfExists);
                 var connection = new SQLiteConnection(file.Path);
-                if (connection.GetTableInfo("DBtestDeta ").Count <= 0)       //テーブルが存在するか確認
+
+                /* テーブルが存在するか確認 */
+                if (connection.GetTableInfo("DBtestDeta ").Count <= 0)
                 {
                     connection.CreateTable<FlowTable>();
                     connection.CreateTable<FlowPartsTable>();
@@ -124,11 +122,7 @@ namespace LearningAlgo
                 {
                     return connection;
                 }
-
-
             }
         }
-
-
     }
 }

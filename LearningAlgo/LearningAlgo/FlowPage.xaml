@@ -7,7 +7,8 @@
         <AbsoluteLayout BackgroundColor="Teal"
                         x:Name="MainLayout">
             <ScrollView x:Name="FlowScroller"
-                        BackgroundColor="Maroon">
+                        BackgroundColor="Maroon"
+                        Orientation="Vertical">
                 <ScrollView.Content>
                     <AbsoluteLayout x:Name="FlowPanel"
                                     BackgroundColor="Lime">
@@ -31,21 +32,23 @@
                         Clicked="TraceDoCliked"/>
             </StackLayout>
 
-            <StackLayout VerticalOptions="FillAndExpand">
-                    <ScrollView x:Name="PrisetScroll">  
-                        <StackLayout  x:Name="Priset"/>
-                    </ScrollView>
-                        <Label x:Name="label1"
+            
+            <StackLayout VerticalOptions="FillAndExpand"
+                TranslationX="300">
+                <ScrollView x:Name="PrisetScroll">  
+                    <StackLayout  x:Name="Priset"/>
+                </ScrollView>
+                    <Label x:Name="ILabel"
                            Text="i:   0"/>
-                    <Label x:Name="label2"
+                    <Label x:Name="JLabel"
                            Text="j:   0"/>
-                    <Label x:Name="label3"
+                    <Label x:Name="MassageLabel"
                            Text="プリセットよめ"/>
-                    <ScrollView>
-                        <Label x:Name="label4"
+                <ScrollView>
+                    <Label x:Name="TraceLabel"
                            Text=""/>
-                    </ScrollView>
-                </StackLayout>
+                </ScrollView>
+            </StackLayout>
             
             <StackLayout x:Name="SidePane"
                          BackgroundColor="#12a7eb"
