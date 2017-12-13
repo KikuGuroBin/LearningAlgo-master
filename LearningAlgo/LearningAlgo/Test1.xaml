@@ -1,9 +1,16 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LearningAlgo.Test1">
     <ContentPage.Content>
-        <StackLayout x:Name="MainLayout">
-        </StackLayout>
+        <ScrollView Orientation="Both">
+            <ScrollView.Content>
+                <AbsoluteLayout x:Name="Lay">
+                    <Label WidthRequest="10"
+                        HeightRequest="400"/>
+                    <Label Text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"/>
+                </AbsoluteLayout>
+            </ScrollView.Content>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>
