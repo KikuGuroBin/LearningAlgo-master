@@ -26,7 +26,6 @@ namespace LearningAlgo
                 /*******テストデータ*********/
                 /*flowデータ*/
                 connection.Insert(new FlowTable { flow_id = "1", flow_name = "1", comment = "test" });
-
                 connection.Insert(new FlowTable { flow_id = "2", flow_name = "2", comment = "quizeTest" });
 
                 /*flowPartsデータ*/
