@@ -1,9 +1,190 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ContentView xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="LearningAlgo.KeyboardDialog">
-	<ContentView.Content>
-        <RelativeLayout>
-            <Label x:Name="Label1"
-                Text="Show Dialog!!"/>
-        </RelativeLayout>
-	</ContentView.Content>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="LearningAlgo.KeyboardDialog" 
+             BackgroundColor="#778c77">
+    <ContentView.Content>
+        
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="155" />
+                    <RowDefinition Height="310" />
+                    <RowDefinition  Height="0"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Label x:Name="displaylabel"
+                    FontSize="45"
+                    Text="入力してください"
+                    TextColor="White"
+                    HorizontalTextAlignment="End"
+                    VerticalTextAlignment="End"
+                   />
+                <Grid Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.RowSpan="2"
+                    BackgroundColor="#778c77">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="backbutton"
+                        Image="PartsNext.png"
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Clicked="PositionButton" />
+                    <Button x:Name="nextbutton"
+                        Image="PartsBack.png"
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Grid.ColumnSpan="2"
+                        Clicked="PositionButton" />
+                    <Button Image="PartDelete.png"
+                        Grid.Row="0"
+                        Grid.Column="4"
+                        Grid.ColumnSpan="2"
+                        Clicked="DeleteButtonClicked" />
+                    <Button Image="PartCommit.png"
+                        Grid.Row="0"
+                        Grid.Column="6"
+                        Grid.ColumnSpan="2"
+                        Clicked="ComitButtonClicked" />
+                    <Button x:Name="buttoni"
+                        Image="Partsi.png"
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Clicked="OnClicked" />
+                    <Button x:Name="button1"
+                        Image="Parts1.png"
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        Clicked="OnClicked" />
+                    <Button x:Name="button2"
+                        Image="Parts2.png"
+                        Grid.Row="1"
+                        Grid.Column="2"
+                        Clicked="OnClicked" />
+                    <Button x:Name="button3"
+                        Image="Parts3.png"
+                        Grid.Row="1"
+                        Grid.Column="3"
+                        Clicked="OnClicked" />
+                    <Button x:Name="buttonplus"
+                        Image="Parts+.png"
+                        Grid.Row="1"
+                        Grid.Column="4"
+                        Clicked="OnClicked" />
+                    <Button x:Name="buttonminas"
+                        Image="Parts-.png"
+                        Grid.Row="1"
+                        Grid.Column="5"
+                        Clicked="OnClicked" />
+                    <Button x:Name="buttoneqal"
+                        Image="Parts=.png"
+                        Grid.Row="1"
+                        Grid.Column="6"
+                        Clicked="OnClicked" />
+                    <Button x:Name="buttonnoteqal"
+                        Image="Parts≠.png"
+                        Grid.Row="1"
+                        Grid.Column="7"
+                        Clicked="OnClicked" />
+                    <Button x:Name="buttonj"
+                        Image="Partsj.png"
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Clicked="OnClicked" />
+                    <Button x:Name="button4"
+                        Image="Parts4.png"
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        Clicked="OnClicked" />
+                    <Button x:Name="button5"
+                        Image="Parts5.png"
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Clicked="OnClicked" />
+                    <Button x:Name="button6"
+                        Image="Parts6.png"
+                        Grid.Row="2"
+                        Grid.Column="3"
+                        Clicked="OnClicked" />
+                    <Button x:Name="buttonmulti"
+                        Image="Parts×.png"
+                        Grid.Row="2"
+                        Grid.Column="4"
+                        Clicked="OnClicked" />
+                    <Button x:Name="buttondivid"
+                        Image="Parts÷.png"
+                        Grid.Row="2"
+                        Grid.Column="5"
+                        Clicked="OnClicked" />
+                    <Button x:Name="buttondainari"
+                        Image="PartsDainari.png"
+                        Grid.Row="2"
+                        Grid.Column="6"
+                        Clicked="OnClicked" />
+                    <Button x:Name="buttondainarieqal"
+                        Image="PartsDainariIkoru.png"
+                        Grid.Row="2"
+                        Grid.Column="7"
+                        Clicked="OnClicked" />
+                    <Button x:Name="button0"
+                        Image="Parts0.png"
+                        Grid.Row="3"
+                        Grid.Column="0"
+                        Clicked="OnClicked" />
+                    <Button x:Name="button7"
+                        Image="Parts7.png"
+                        Grid.Row="3"
+                        Grid.Column="1"
+                        Clicked="OnClicked" />
+                    <Button x:Name="button8"
+                        Image="Parts8.png"
+                        Grid.Row="3"
+                        Grid.Column="2"
+                        Clicked="OnClicked" />
+                    <Button x:Name="button9"
+                        Image="Parts9.png"
+                        Grid.Row="3"
+                        Grid.Column="3"
+                        Clicked="OnClicked" />
+                    <Button x:Name="buttonremainder"
+                        Image="Parts%.png"
+                        Grid.Row="3"
+                        Grid.Column="4"
+                        Clicked="OnClicked" />
+                    <Button x:Name="buttonclon"
+                        Image="PartsClon.png"
+                        Grid.Row="3"
+                        Grid.Column="5"
+                        Clicked="OnClicked" />
+                    <Button x:Name="buttonsyounari"
+                        Image="PartsSyounari.png"
+                        Grid.Row="3"
+                        Grid.Column="6"
+                        Clicked="OnClicked" />
+                    <Button x:Name="buttonsyounarieqal"
+                        Image="PartsSyounariIkoru.png"
+                        Grid.Row="3"
+                        Grid.Column="7"
+                        Clicked="OnClicked" />
+                </Grid>
+            </Grid>
+        
+    </ContentView.Content>
 </ContentView>

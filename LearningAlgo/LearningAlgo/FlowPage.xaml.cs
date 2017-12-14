@@ -16,7 +16,7 @@ namespace LearningAlgo
         /// <summary>
         /// カスタムダイアログサイズの定数
         /// </summary>
-        private const int DIALOGSIZE = 300;
+        private const int DIALOGSIZE = 500;
 
         /// <summary>
         /// フローチャートの部品のサイズ
@@ -44,11 +44,16 @@ namespace LearningAlgo
         private bool SidePaneShowing;
 
         /// <summary>
-        /// 配置された画像インスタンスを格納する
+        /// 配置された画像インスタンスを格納する (identification_id
         /// </summary>
-        private Dictionary<string, Label> ImageList = new Dictionary<string, Label>();
+        private Dictionary<int, Label> ImageList = new Dictionary<int, Label>();
 
-        private string PriviousId = "0";
+        /// <summary>
+        /// トレース時配置された画像の前後関係のはあく用です
+        /// </summary>
+        private int PriviousId = 0;
+
+        private int MaxIdentificationId = 0;
 
         /// <summary>
         /// プリセットテーブル　プリID、各テーブルの中身(日にちとかプリIDとか)
@@ -102,8 +107,7 @@ namespace LearningAlgo
         {
             base.OnSizeAllocated(width, height);
 
-            Shadow.Opacity = 0;
-            Dialog.Opacity = 0;
+
             SidePane.Opacity = 0;
 
             /* 初回限定の処理 */
@@ -113,10 +117,12 @@ namespace LearningAlgo
                 Shadow.TranslateTo(0, height, 0);
                 Shadow.WidthRequest = width;
                 Shadow.HeightRequest = height;
+                Shadow.Opacity = 0;
 
                 Dialog.TranslateTo(width / 2, height, 0);
                 Dialog.WidthRequest = DIALOGSIZE;
                 Dialog.HeightRequest = DIALOGSIZE;
+                Dialog.Opacity = 0;
 
                 /* フローチャートのレイアウト部分を配置 */
                 FlowScroller.TranslateTo(0, 0, 0);
@@ -206,7 +212,7 @@ namespace LearningAlgo
         private void ShowDialogClicked(object sender, EventArgs args)
         {
             /* カスタムダイアログ表示 */
-            ImitationDialog.ShowUp(300);
+            ImitationDialog.ShowUp(200);
         }
 
         private void ShadowTapped(object sender, EventArgs args)
@@ -229,25 +235,99 @@ namespace LearningAlgo
             /* 選択された画像を取得 */
             var source = (sender as Image).Source;
 
-            /* ドラッグ可能なImageインスタンス生成 */
-            var myImage = new MyImage
+            /* ドラッグ可能なレイアウト生成 */
+            var myLayout = new MyLayout
             {
+                BackgroundColor =Color.Azure,
                 TranslationX = 0,
                 TranslationY = ImagePosition,
                 WidthRequest = IMAGESIZE,
                 HeightRequest = IMAGESIZE,
-                DrugFlag = true,
-                Source = source,
+                DrugFlag = true
             };
 
-            myImage.Drug += Drug;
+            /*レイアウト内画像*/
+            var myImage = new Image
+            {
+                BackgroundColor=Color.Brown,
+                Source=source,
+                WidthRequest = IMAGESIZE,
+                HeightRequest = IMAGESIZE ,
+            };
 
+            /* 処理内容を記述するスクロール可能なラベル生成 */
+            var myLabel = new Label
+            {
+                VerticalTextAlignment = TextAlignment.Center,
+                HorizontalTextAlignment = TextAlignment.Center,
+
+            };
+            var scroll = new ScrollView()
+            {
+                BackgroundColor=Color.BlueViolet,
+                Content = myLabel,
+                TranslationX = IMAGESIZE / 4,
+                TranslationY = IMAGESIZE * 3 / 8,
+                WidthRequest = IMAGESIZE / 2,
+                HeightRequest = IMAGESIZE / 4,
+                Orientation = ScrollOrientation.Horizontal,
+            };
+
+            var tgr = new TapGestureRecognizer();
+            tgr.Tapped += (s, e) =>
+            {
+                /* カスタムダイアログ表示 */
+                ImitationDialog.ShowUp(200);
+            };
+
+            myLabel.GestureRecognizers.Add(tgr);
+            myLayout.LayoutDrug += LayoutDrug;
+            myLayout.Children.Add(myImage);
+            myLayout.Children.Add(scroll);
             /* フローチャートのパネルに画像を追加 */
-            FlowPanel.Children.Add(myImage);
+            FlowPanel.Children.Add(myLayout);
+
+            /* 管理用リストに追加 */
+            ImageList.Add(MaxIdentificationId++, myLabel);
 
             /* レイアウトでの最後尾の座標を更新 */
-            ImagePosition += 50;
+            ImagePosition += IMAGESIZE;
         }
+
+        private void LayoutDrug(object sender, DrugEventArgs args)
+        {
+            var layout = sender as MyLayout;
+
+            if (!layout.DrugFlag)
+            {
+                return;
+            }
+
+            if ((layout.TranslationX + args.X) < 0)
+            {
+                return;
+            }
+
+            if ((layout.TranslationX + args.X + layout.Width) > FlowPanel.Width)
+            {
+                return;
+            }
+
+            layout.TranslationX += args.X;
+
+            if ((layout.TranslationY + args.Y) < 0)
+            {
+                return;
+            }
+
+            if ((layout.TranslationY + args.Y + layout.Height) > FlowPanel.Height)
+            {
+                return;
+            }
+
+            layout.TranslationY += args.Y;
+        }
+
 
         private void Drug(object sender, DrugEventArgs args)
         {
@@ -296,48 +376,70 @@ namespace LearningAlgo
             /*別のプリセット読み込んだ時初期化用*/
             FlowPanel.Children.Clear();
             ImageList.Clear();
+            MaxIdentificationId = 0;
 
             foreach (var flow in array){
                 var x = double.Parse(flow.position_x) + 50;
                 var y = double.Parse(flow.position_y);
 
-                /* ドラッグ可能なImageインスタンス生成 */
-                var myImage = new MyImage
+                /* ドラッグ可能なレイアウト生成 */
+                var myLayout = new MyLayout
                 {
+                    BackgroundColor = Color.Azure,
                     TranslationX = x,
                     TranslationY = y,
+                    WidthRequest = IMAGESIZE,
+                    HeightRequest = IMAGESIZE,
+                    DrugFlag = true
+                };
+
+                /*レイアウト内画像*/
+                var myImage = new Image
+                {
+                    BackgroundColor = Color.Brown,
                     WidthRequest = IMAGESIZE,
                     HeightRequest = IMAGESIZE,
                     Source = flow.type_id,
                 };
 
-                /* 処理内容を記述したスクロール可能なラベル生成 */
+                /* 処理内容を記述するスクロール可能なラベル生成 */
                 var myLabel = new Label
                 {
                     Text = flow.data,
                     VerticalTextAlignment = TextAlignment.Center,
                     HorizontalTextAlignment = TextAlignment.Center,
-                };
 
+                };
                 var scroll = new ScrollView()
                 {
                     Content = myLabel,
-                    TranslationX = x + IMAGESIZE / 4,
-                    TranslationY = y + IMAGESIZE * 3 / 8,
+                    TranslationX = IMAGESIZE / 4,
+                    TranslationY = IMAGESIZE * 3 / 8,
                     WidthRequest = IMAGESIZE / 2,
                     HeightRequest = IMAGESIZE / 4,
                     Orientation = ScrollOrientation.Horizontal,
                 };
 
-                myImage.Drug += Drug;
+                if(MaxIdentificationId < int.Parse(flow.identification_id))
+                {
+                    MaxIdentificationId = int.Parse(flow.identification_id);
+                }
 
                 /* 管理用リストに追加 */
-                ImageList.Add(flow.identification_id, myLabel);
-                /* フローチャートのパネルに画像を追加 */
-                FlowPanel.Children.Add(myImage);
+                ImageList.Add(int.Parse(flow.identification_id), myLabel);
 
-                /* フローチャートのパネルに処理内容を追加 */
-                FlowPanel.Children.Add(scroll);
+                var tgr = new TapGestureRecognizer();
+                tgr.Tapped += (s, e) =>
+                {
+                    /* カスタムダイアログ表示 */
+                    ImitationDialog.ShowUp(200);
+                };
+                myLabel.GestureRecognizers.Add(tgr);
+                myLayout.LayoutDrug += LayoutDrug;
+                myLayout.Children.Add(myImage);
+                myLayout.Children.Add(scroll);
+                /* フローチャートのパネルに画像を追加 */
+                FlowPanel.Children.Add(myLayout);
             }
         }
 
@@ -367,7 +469,6 @@ namespace LearningAlgo
                     var text = l.Text;
                     PresetSet(text);
                 };
-
                 Priset.Children.Add(PriIdLabel);
             }
         }
@@ -688,16 +789,16 @@ namespace LearningAlgo
                 Device.BeginInvokeOnMainThread(() =>
                 {
                     TraceLabel.Text = TraceLabel.Text + FlowTable.data.ToString() + "\n";
-
+                    int id = int.Parse(FlowTable.identification_id);
                     try
                     {
                         ImageList[PriviousId].BackgroundColor = Color.Default;
-                        ImageList[FlowTable.identification_id].BackgroundColor = Color.Violet;
-                        PriviousId = FlowTable.identification_id;
+                        ImageList[id].BackgroundColor = Color.Violet;
+                        PriviousId = id;
                     }catch(Exception)
                     {
-                        ImageList[FlowTable.identification_id].BackgroundColor = Color.Violet;
-                        PriviousId = FlowTable.identification_id;
+                        ImageList[id].BackgroundColor = Color.Violet;
+                        PriviousId = id;
                     }
                 });
 
