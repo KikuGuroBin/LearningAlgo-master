@@ -4,19 +4,25 @@
              xmlns:local="clr-namespace:LearningAlgo;assembly:LearningAlgo"
              x:Class="LearningAlgo.FlowPage">
     <ContentPage.Content>
-        <AbsoluteLayout BackgroundColor="Teal"
+        <AbsoluteLayout BackgroundColor="#e5f0ff"
                         x:Name="MainLayout">
+            
             <ScrollView x:Name="FlowScroller"
-                        BackgroundColor="Maroon"
                         Orientation="Vertical">
                 <ScrollView.Content>
-                    <AbsoluteLayout x:Name="FlowPanel"
-                                    BackgroundColor="Lime">
-                    </AbsoluteLayout>
+<!--                    <AbsoluteLayout x:Name="FlowPanel" BackgroundColor="Fuchsia">
+                        <Button Text="aaaaaaaaaaa" 
+                Clicked="Clicked3" />
+                    </AbsoluteLayout>-->
+
+                    <local:LineCanvas x:Name="Canvas">
+                        <Button Text="aaaaaaaaaaa" 
+                                Clicked="Clicked3"/>
+                    </local:LineCanvas>
                 </ScrollView.Content>
             </ScrollView>
             <StackLayout x:Name="Footer"
-                         BackgroundColor="#23455678"
+                         BackgroundColor="#23455622"
                          Orientation="Horizontal"
                          VerticalOptions="FillAndExpand"
                          HorizontalOptions="FillAndExpand">
@@ -34,6 +40,7 @@
 
             
             <StackLayout VerticalOptions="FillAndExpand"
+                BackgroundColor="#4696e5"
                 TranslationX="300"
                 WidthRequest="100">
                 <ScrollView x:Name="PrisetScroll">  
@@ -73,7 +80,7 @@
                         <Image Grid.Row="0" 
                                Grid.Column="0"
                                x:Name="Sq"
-                               Source="SideHisigata.png"
+                               Source="SideSikaku.png"
                                BackgroundColor="Fuchsia">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="ItemTapped"/>
@@ -82,7 +89,7 @@
                         <Image Grid.Row="1" 
                                Grid.Column="0"
                                x:Name="Hi"
-                               Source="SideHisigata.png"
+                               Source="SideHiSigata.png"
                                BackgroundColor="Green">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="ItemTapped"/>
@@ -91,7 +98,7 @@
                         <Image Grid.Row="2" 
                                Grid.Column="0"
                                x:Name="He"
-                               Source="SideHisigata.png"
+                               Source="SideDaikeiUe.png"
                                BackgroundColor="Maroon">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="ItemTapped"/>
@@ -100,14 +107,14 @@
                         <Image Grid.Row="3" 
                                Grid.Column="0"
                                x:Name="Du"
-                               Source="SideHisigata.png">
+                               Source="SideDaikeiSita.png">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="ItemTapped"/>
                             </Image.GestureRecognizers>
                         </Image>
                         <Image Grid.Row="4" 
                                Grid.Column="0"
-                               Source="SideHisigata.png">
+                               Source="SideHeikou.png">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer Tapped="ItemTapped"/>
                             </Image.GestureRecognizers>
@@ -143,7 +150,7 @@
                     <TapGestureRecognizer Tapped="ShadowTapped"/>
                 </BoxView.GestureRecognizers>
             </BoxView>
-            <local:KeyboardDialog x:Name="Dialog"/>
+            <local:KeyboardDialog x:Name="Dialog" BackgroundColor="Black"/>
         </AbsoluteLayout>
     </ContentPage.Content>
 </ContentPage>

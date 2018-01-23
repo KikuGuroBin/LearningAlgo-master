@@ -16,6 +16,10 @@ namespace LearningAlgo
             /* MainPage = new LearningAlgo.MainPage(); */
 
             MainPage = new NavigationPage(new FlowPage());
+
+            //MainPage = new NavigationPage(new LineCanvasDemo());
+
+            //MainPage = new NavigationPage(new Test1());
 		}
 
 		protected override void OnStart ()

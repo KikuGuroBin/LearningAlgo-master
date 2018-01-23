@@ -66,11 +66,15 @@ namespace LearningAlgo
             DirectionFlag = 1;
 
             /* ダイアログを指定座標まで移動 */
+            Dialog.IsVisible = true;
             var rc = Dialog.Bounds;
             rc.Y = y - 50;
             await Dialog.TranslateTo(rc.X, rc.Y, 0);
 
+
+
             /* 影表示 */
+            Shadow.IsVisible = true;
             rc = Shadow.Bounds;
             rc.Y = 0;
             await Shadow.TranslateTo(rc.X, 0, 0);
@@ -144,6 +148,7 @@ namespace LearningAlgo
 
             /* アニメーションフラグをおろす */
             Moving = false;
+
         }
 
         /// <summary>
@@ -183,9 +188,12 @@ namespace LearningAlgo
 
             /* 影を非表示にする */
             rc = Shadow.Bounds;
-            await Shadow.TranslateTo(rc.X, rc.Height, 0);
+            // await Shadow.TranslateTo(rc.X, rc.Height, 0);
+
+            Shadow.IsVisible = false;
 
             await Dialog.TranslateTo(Dialog.Bounds.X, rc.Y, 0);
+            Dialog.IsVisible = false;
 
             /* フラグ初期化 */
             AxisFlag = 0;

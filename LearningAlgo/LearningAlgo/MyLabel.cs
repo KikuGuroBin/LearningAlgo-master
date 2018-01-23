@@ -1,7 +1,12 @@
 ﻿using System;
+using Xamarin.Forms;
+
 namespace LearningAlgo
 {
-    public interface MyLabel
+    public class MyLabel : Label
     {
+        public EventHandler<DrugEventArgs> Drug = (s, e) => { };
+
+        public int LabelId { get; set; }
     }
 }

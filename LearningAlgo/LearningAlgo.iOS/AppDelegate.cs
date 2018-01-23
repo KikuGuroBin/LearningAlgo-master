@@ -42,7 +42,7 @@ namespace LearningAlgo.iOS
         [Export("application:supportedInterfaceOrientationsForWindow:")]
         public UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, IntPtr forWindow)
         {
-            return UIInterfaceOrientationMask.Portrait;
+            return UIInterfaceOrientationMask.Landscape;
         }
 	}
 }

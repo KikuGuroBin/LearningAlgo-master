@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Xamarin.Forms;
+using System.Threading.Tasks;
+using System.Threading;
+
 
 namespace LearningAlgo
 {
@@ -11,9 +14,19 @@ namespace LearningAlgo
         /// </summary>
         private ViewBounds LabelBounds;
 
-        private string SendStr;
+        /// <summary>
+        /// いま入ってる文字列
+        /// </summary>
+        /// <value>The send string.</value>
+        public string SendStr { get; set; }
 
+        public Button CommitButton { get; set; }
 
+        /// <summary>
+        /// 変更するLabelのID
+        /// </summary>
+        /// <value>The send string.</value>
+        public int SendId { get; set; }
 
         bool Flag;
 
@@ -22,6 +35,13 @@ namespace LearningAlgo
         public KeyboardDialog()
         {
             InitializeComponent();
+            CommitButton = Commit;
+            displaylabel.Text = SendStr;
+        }
+
+        public void SetStr()
+        {
+            displaylabel.Text = SendStr;
         }
 
         protected override void OnSizeAllocated(double width, double height)
@@ -33,42 +53,55 @@ namespace LearningAlgo
         {
             if (sender.Equals(nextbutton))
             {
-                ///→押下
-                ///ここにらべるのやつの処理を書く
+                /* 
+                 * →押下
+                 * ここにらべるのやつの処理を書く
+                 */
 
 
             }
             else if (sender.Equals(backbutton))
             {
-                ///←押下
-                ///ここにらべるのやつの処理を書く
+                /* 
+                 * ←押下
+                 * ここにらべるのやつの処理を書く
+                 */
             }
         }
         private void DeleteButtonClicked(object sender, EventArgs e)
         {
-            ///消去ボタン押下
-            SendStr = "";
-            displaylabel.Text = "入力してください";
+            /* 消去ボタン押下 */
+            SendStr = SendStr.Substring(0, SendStr.Length - 1);
+            if(SendStr.Length==0){
+                displaylabel.Text = "入力してください";
+            }
+            else
+            {
+                displaylabel.Text = SendStr;    
+            }
         }
         private void ComitButtonClicked(object sender, EventArgs e)
         {
-            ///決定ボタン押下
-            ///ここにコミットされた文字列を送信する処理をﾊﾞﾊﾞｰﾝと書く
-            ///ImitationDialog.Hide();の処理 と同じ処理を書きたい
+            /* 
+             * 決定ボタン押下
+             * ここにコミットされた文字列を送信する処理をﾊﾞﾊﾞｰﾝと書く
+             * ImitationDialog.Hide();の処理 と同じ処理を書きたい
+             */
 
         }
 
         private void OnClicked(object sender, EventArgs e)
         {
-            ///1,2,3,4,5,6,7,8,9,0
-            ///+,-,×,÷,%
-            ///=,≒,>,>=,<,<=
-            ///i,j
+            /* 
+             * 数字   : 1,2,3,4,5,6,7,8,9,0
+             * 演算子 : +,-,×,÷,%
+             *         =,≒,>,>=,<,<=
+             * 変数   : i,j
+             */
 
             if (sender.Equals(button0))
             {
-                ///DisplayStr += "0";
-                System.Diagnostics.Debug.WriteLine("asdlkfjasdfhkasdbflhjjbxdznjsa");
+                /* DisplayStr += "0"; */
                 SendStr += "0";
             }
             else if (sender.Equals(button1))

@@ -9,15 +9,15 @@ using Xamarin.Forms.Platform.iOS;
 using LearningAlgo;
 using LearningAlgo.iOS;
 
-[assembly: ExportRenderer(typeof(MyLayout), typeof(MyLayoutRenderer))]
+[assembly : ExportRenderer(typeof(LineCanvas), typeof(LineCanvasRenderer))]
 namespace LearningAlgo.iOS
 {
     /// <summary>
-    /// MyImageインスタンスのレンダラー
+    /// LineCanvasのドラッグ用
     /// </summary>
-    public class MyLayoutRenderer : ViewRenderer<MyLayout, UIView>
+    public class LineCanvasRenderer : ViewRenderer<LineCanvas, UIView>
     {
-        protected override void OnElementChanged(ElementChangedEventArgs<MyLayout> e)
+        protected override void OnElementChanged(ElementChangedEventArgs<LineCanvas> e)
         {
             base.OnElementChanged(e);
         }
@@ -33,10 +33,10 @@ namespace LearningAlgo.iOS
             base.TouchesMoved(touches, evt);
             UITouch touch = touches.AnyObject as UITouch;
 
-            /* MyLayoutインスタンスの現在の座標 */
+            /* MyImageインスタンスの現在の座標 */
             var newPoint = touch.LocationInView(this);
 
-            /* MyLayoutインスタンスの前回の座標 */
+            /* MyImageインスタンスの前回の座標 */
             var previousPoint = touch.PreviousLocationInView(this);
 
             /* 差分を計算 */
@@ -44,13 +44,22 @@ namespace LearningAlgo.iOS
             nfloat dy = newPoint.Y - previousPoint.Y;
 
             /* コールバック */
-            var el = this.Element as MyLayout;
-            el.LayoutDrug(el, new DrugEventArgs(el, dx, dy));
+            var el = this.Element as LineCanvas;
+            el.Drug(el, new DrugEventArgs(el, dx, dy));
         }
 
         public override void TouchesEnded(NSSet touches, UIEvent evt)
         {
             base.TouchesEnded(touches, evt);
+
+            /* コールバック */
+            var el = this.Element as LineCanvas;
+            var args = new DrugEventArgs(el, 0, 0)
+            {
+                DrugEnded = true,
+            };
+
+            el.Drug(el, args);
         }
     }
 }

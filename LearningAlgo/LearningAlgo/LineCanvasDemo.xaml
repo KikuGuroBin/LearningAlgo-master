@@ -1,5 +1,30 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="LearningAlgo.LineCanvasDemo">
-	<ContentPage.Content>
-	</ContentPage.Content>
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+    xmlns:local="clr-namespace:LearningAlgo;assembly:LearningAlgo"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+    x:Class="LearningAlgo.LineCanvasDemo">
+    <ContentPage.Content>
+        <AbsoluteLayout>
+            <local:LineCanvas x:Name="Canvas"/>
+            <AbsoluteLayout x:Name="Main">
+                <BoxView x:Name="Box1"
+                         WidthRequest="100"
+                         HeightRequest="100"
+                         TranslationX="200"
+                         TranslationY="100"
+                         Opacity="0.5"
+                         BackgroundColor="Red"/>
+                <BoxView x:Name="Box2"
+                         WidthRequest="100"
+                         HeightRequest="100"
+                         TranslationX="50"
+                         TranslationY="300"
+                         Opacity="0.5"
+                         BackgroundColor="Blue"/>
+                <Button Text="Click!!"
+                        TranslationX="200"
+                        Clicked="OnClick"/>
+            </AbsoluteLayout>
+        </AbsoluteLayout>
+    </ContentPage.Content>
 </ContentPage>

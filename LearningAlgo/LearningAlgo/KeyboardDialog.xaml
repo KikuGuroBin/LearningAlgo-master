@@ -58,7 +58,9 @@
                         Grid.Column="4"
                         Grid.ColumnSpan="2"
                         Clicked="DeleteButtonClicked" />
-                    <Button Image="PartCommit.png"
+                    <Button 
+                        x:Name="Commit"
+                        Image="PartCommit.png"
                         Grid.Row="0"
                         Grid.Column="6"
                         Grid.ColumnSpan="2"

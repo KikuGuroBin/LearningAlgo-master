@@ -16,6 +16,8 @@ namespace LearningAlgo
         /// </summary>
         public double Y;
 
+        public bool DrugEnded;
+
         public DrugEventArgs(object sender, double x, double y)
         {
             X = x;

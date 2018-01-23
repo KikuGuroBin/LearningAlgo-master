@@ -16,6 +16,7 @@ namespace LearningAlgo
         /// パーツテーブルの格納
         /// </summary>
         public Dictionary<string, FlowPartstable> ParTb;
+
         /// <summary>
         /// 出力先の格納
         /// </summary>
@@ -47,8 +48,6 @@ namespace LearningAlgo
                     };
                 }
 
-                var c = 0;
-
                 var list = connection.Table<OutputTable>()
                                         .Where(x => x.flow_id == Tb1ID)
                                         .Select(x => x)
@@ -78,6 +77,7 @@ namespace LearningAlgo
 
                 connection.Close();
             }
+
             return (ParTb, OutTb);
         }
 

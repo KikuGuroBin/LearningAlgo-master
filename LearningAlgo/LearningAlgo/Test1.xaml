@@ -3,14 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="LearningAlgo.Test1">
     <ContentPage.Content>
-        <ScrollView Orientation="Both">
-            <ScrollView.Content>
-                <AbsoluteLayout x:Name="Lay">
-                    <Label WidthRequest="10"
-                        HeightRequest="400"/>
-                    <Label Text="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"/>
-                </AbsoluteLayout>
-            </ScrollView.Content>
+        <ScrollView>
+            <AbsoluteLayout x:Name="pane">
+                <Button Clicked="Handle_Clicked"
+                Text="aaaa"/>
+            </AbsoluteLayout>
         </ScrollView>
     </ContentPage.Content>
 </ContentPage>

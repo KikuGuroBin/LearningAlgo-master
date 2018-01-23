@@ -9,11 +9,4 @@ namespace LearningAlgo
 
         public bool DrugFlag { get; set; }
     }
-
-    public class MyLayout : AbsoluteLayout
-    {
-        public EventHandler<DrugEventArgs> LayoutDrug = (s, e) => {};
-
-        public bool DrugFlag { get; set; }
-    }
 }

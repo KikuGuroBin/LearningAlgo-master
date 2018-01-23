@@ -38,6 +38,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)TableClass.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DBConnection.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CalculateClass.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MyLayout.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MyLabel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LineCanvas.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)LineCanvasDemo.xaml.cs">
+      <DependentUpon>LineCanvasDemo.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)MainPage.xaml">
@@ -57,6 +63,10 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)MasterPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)LineCanvasDemo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
