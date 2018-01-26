@@ -7,6 +7,7 @@ namespace LearningAlgo
     {
         public EventHandler<DrugEventArgs> Drug = (s, e) => { };
 
+
         public int LabelId { get; set; }
     }
 }

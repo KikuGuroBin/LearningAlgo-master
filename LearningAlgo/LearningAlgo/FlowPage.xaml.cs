@@ -14,6 +14,7 @@ namespace LearningAlgo
     /// </summary>
     public partial class FlowPage : ContentPage
     {
+
         /// <summary>
         /// カスタムダイアログサイズの定数
         /// </summary>
@@ -89,6 +90,15 @@ namespace LearningAlgo
         /// </summary>
         List<Outputtable> OutputTableList = new List<Outputtable>();
 
+        /// <summary>
+        /// 2つのオブジェクトをつなぐ際のドラッグとの差別用フラグ
+        /// </summary>
+        bool LineConnectionflug;
+
+        Stack<View> LineConnectionStack = new Stack<View>();
+
+        string SelectFloeId;
+
         public FlowPage()
         {
             InitializeComponent();
@@ -143,10 +153,10 @@ namespace LearningAlgo
                 Dialog.HeightRequest = DIALOGSIZE;
                 Dialog.Opacity = 0;
 
-                /* フローチャートのレイアウト部分を配置 */
+                /* フローチャートのレイアウト部分を配置 
                 FlowScroller.TranslateTo(0, 0, 0);
                 FlowScroller.WidthRequest = width;
-                FlowScroller.HeightRequest = height / 10 * 9;
+                FlowScroller.HeightRequest = height / 10 * 9;*/
 
                 /* フッターメニューを配置 */
                 Footer.TranslateTo(0, height / 10 * 9, 0);
@@ -176,6 +186,45 @@ namespace LearningAlgo
             }
 
             SidePane.Opacity = 1;
+        }
+
+        /* index.InitializeCanvas */
+        /// <summary>
+        /// フィールドCanvasの初期化
+        /// </summary>
+        private void InitializeCanvas()
+        {
+            Canvas = new LineCanvas()
+            {
+                BackgroundColor = Color.Lime,
+            };
+
+            /* 制約付きでフィールドMainにCanvas追加 */
+            Main.Children.Add(Canvas,
+                Constraint.RelativeToParent((p) =>
+                {
+                    return Canvas.X;
+                }),
+                Constraint.RelativeToParent((p) =>
+                {
+                    return Canvas.Y;
+                }),
+                Constraint.RelativeToParent((p) =>
+                {
+                    return Canvas.Width;
+                }),
+                Constraint.RelativeToParent((p) =>
+                {
+                    return Canvas.Height;
+                })
+            );
+
+            var rc = Canvas.Bounds;
+            rc.X += 20;
+            rc.Y += 60;
+            rc.Width += 100;
+            rc.Height += 100;
+            Canvas.LayoutTo(rc, 0);
         }
 
         /// <summary>
@@ -280,7 +329,9 @@ namespace LearningAlgo
 
             /* フローチャートのパネルに画像を追加 */
             var rc = myLayout.Bounds;
-            Canvas.Children.Add(myLayout, new Rectangle(0, ImagePosition, rc.Width, rc.Height));
+
+            Canvas.AppendView(myLayout);
+            myLayout.LayoutTo(new Rectangle(0, ImagePosition, rc.Width, rc.Height), 0);
 
             /*レイアウト内画像*/
             var myImage = new Image
@@ -324,6 +375,8 @@ namespace LearningAlgo
             };
 
             myLabel.GestureRecognizers.Add(tgr);
+            myLayout.PartsId = MaxIdentificationId.ToString();
+            MyLayoutList.Add(myLayout);
             myLayout.LayoutDrug += LayoutDrug;
             myLayout.Children.Add(myImage);
             myLayout.Children.Add(scroll);
@@ -332,16 +385,20 @@ namespace LearningAlgo
             ImageList.Add(MaxIdentificationId, myLabel);
             /* 第二管理Dictionaryに追加 */
             DbInsertListTb2[MaxIdentificationId.ToString()] = new FlowPartstable();
-
+            DbInsertListTb2[MaxIdentificationId.ToString()].flow_id = SelectFloeId;
+            DbInsertListTb2[MaxIdentificationId.ToString()].identification_id = MaxIdentificationId.ToString();
+            DbInsertListTb2[MaxIdentificationId.ToString()].type_id = source.ToString();
+            DbInsertListTb2[MaxIdentificationId.ToString()].startFlag = "0";
             /* レイアウトでの最後尾の座標を更新 */
             ImagePosition += IMAGESIZE;
+
         }
 
         private void LayoutDrug(object sender, DrugEventArgs args)
         {
             var layout = sender as MyLayout;
 
-            if(layout.DrugFlag)
+            if(!LineConnectionflug)
             {
                 /* Viewの移動 */
                 layout.TranslateTo(layout.TranslationX + args.X, layout.TranslationY + args.Y);
@@ -353,10 +410,43 @@ namespace LearningAlgo
                 {
                     l.Draw();
                 }
+
+                DbInsertListTb2[layout.PartsId].position_x = "";
+                DbInsertListTb2[layout.PartsId].position_y = "";
             }
             else
             {
-                /*線を引くモード予定*/
+                /*線を引くモード*/
+                if (LineConnectionStack.Contains(layout))
+                {
+                    //layout.BackgroundColor = Color.Black;
+                    //LineConnectionStack.Pop();
+                    //Debug.WriteLine("同じなのでだしました");
+                }
+                else
+                {
+                    if (LineConnectionStack.Count == 0)
+                    {
+                        layout.BackgroundColor = Color.Red;
+                        LineConnectionStack.Push(layout);
+                        Debug.WriteLine("一つ目を追加");
+                    }
+                    else
+                    {
+                        View layout2 = LineConnectionStack.Peek();
+                        layout2.BackgroundColor = Color.Black;
+                        LineConnectionStack.Pop();
+                        LineConnectionStack.Clear();
+                        Debug.WriteLine("2つ目を追加および線");
+                        LineConnectionflug = false;
+
+                        var line = Canvas.Tail(layout2, layout);
+
+                        line.Draw();
+
+                    }
+
+                }
             }
 
             //if (!layout.DrugFlag)
@@ -406,7 +496,7 @@ namespace LearningAlgo
 
         void Clicked3(object sa, EventArgs args)
         {
-            Canvas.Children.Add(new Label { Text = "aaa" }, new Rectangle(0, s += 100, 50, 50));
+            //Canvas.Children.Add(new Label { Text = "aaa" }, new Rectangle(0, s += 100, 50, 50));
         }
         /* ------------- --------------- */
 
@@ -442,6 +532,7 @@ namespace LearningAlgo
                 /* ドラッグ可能なレイアウト生成 */
                 var myLayout = new MyLayout
                 {
+                    
                     BackgroundColor = Color.Azure,
                     WidthRequest = IMAGESIZE,
                     HeightRequest = IMAGESIZE,
@@ -453,7 +544,8 @@ namespace LearningAlgo
                 var rc = new Rectangle(x, work, IMAGESIZE, IMAGESIZE);
 
                 /* フローチャートのパネルに画像を追加 */
-                Canvas.Children.Add(myLayout, new Rectangle(0, 0, IMAGESIZE, IMAGESIZE));
+                Canvas.AppendView(myLayout);
+                myLayout.LayoutTo(new Rectangle(0, 0, IMAGESIZE, IMAGESIZE), 0);
 
                 myLayout.TranslationX = x;
                 myLayout.TranslationY = work;
@@ -539,6 +631,7 @@ namespace LearningAlgo
                 {
                     var l = s as Button;
                     var text = l.Text;
+                    SelectFloeId = text;
                     PresetSet(text);
                 };
 
@@ -913,6 +1006,23 @@ namespace LearningAlgo
             TraceLabel.Text = "";
             MassageLabel.Text = "開始";
             TracePreviewer();
+        }
+        private void LineConectionClicked(object sender, EventArgs e)
+        {
+            if(!LineConnectionflug)
+            {
+                LineConnectionflug = true;
+            }
+            else
+            {
+                LineConnectionflug = false;
+            }
+        }
+        private void SaveClicked(object sender,EventArgs e)
+        {
+            /*
+            DbInsertListTb2でーたべーすに
+            */
         }
     }
 }

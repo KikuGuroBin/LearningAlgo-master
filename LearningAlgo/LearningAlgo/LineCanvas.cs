@@ -12,7 +12,7 @@ namespace LearningAlgo
     /// 
     /// 線の描画は内部クラスで行っている。
     /// </summary>
-    public class LineCanvas : AbsoluteLayout
+    public class LineCanvas : RelativeLayout
     {
         /// <summary>
         /// 生成した線を管理するリスト。
@@ -27,7 +27,7 @@ namespace LearningAlgo
         /// <summary>
         /// The drug.
         /// </summary>
-        public EventHandler<DrugEventArgs> Drug;
+        public EventHandler<DrugEventArgs> Drug = (sender, e) => {};
 
         /// <summary>
         /// しっぽから頭を繋ぐ線を描画するフロント。
@@ -37,54 +37,30 @@ namespace LearningAlgo
         /// </returns>
         public LineCanvas.Line Tail(params View[] views)
         {
-            var array = new BoxView[5];
-
-            var list = new List<LineCanvas.LineBounds>();
+            /* 各BoxViewのX,Y座標格納する構造体を列挙するリスト */
+            var list = new List<BoxView>();
 
             for (var i = 0; i < 5; i++)
             {
+                /* 線の役割を持ったBoxView生成 */
                 var box = new BoxView
                 {
                     BackgroundColor = Color.Black,
                 };
-                array[i] = box;
 
-                var bound = new LineBounds
-                {
-                    LineX = 0,
-                    LineY = 0,
-                };
-                list.Add(bound);
+                list.Add(box);
 
-                this.Children.Add(box);
-
-                /*
-                this.Children.Add(box,
-                    Constraint.RelativeToParent((p) => {
-                        return bound.LineX;
-                   s }),
-                    Constraint.RelativeToParent((p) => 
-                    {
-                        return bound.LineY;
-                    }),
-                    Constraint.RelativeToParent((p) => 
-                    {
-                        return 0;
-                    }),
-                    Constraint.RelativeToParent((p) =>
-                    {
-                        return 0;
-                    })
-                );    
-                */
+                /* 制約付き子View登録 */
+                this.AppendView(box);
             }
 
-            var line = new LineCanvas.Line(array)
-            {
-                PreviousView = views[0],
-                BehideView = views[1],
-                BoundsList = list,
-            };
+            /* 
+             * 引数によって描画の方式を変えるので、
+             * LineCanvas.Lineクラスのコンストラクタへの引数を変える。
+             */
+            var line = views.Length == 2 ?
+                new LineCanvas.Line(views[0], views[1], list, true) :
+                new LineCanvas.Line(list, true);
 
             Lines.Add(line);
 
@@ -94,53 +70,103 @@ namespace LearningAlgo
         /// <summary>
         /// 右端または左端から頭をつなぐ線を描画するフロント。
         /// </summary>
-        /// <param name="a">線をつなぐインスタンス</param>
-        /// <param name="b">線をつなぐインスタンス</param>
-        /// <returns>
-        /// 生成したLineCanvas.Lineインスタンス。
-        /// </returns>
-        public LineCanvas.Line Side()
+        /// <param name="views">線でつなぎたいViewインスタンス</param>
+        /// <returns>生成したLineCanvas.Lineインスタンス</returns>
+        public LineCanvas.Line Side(bool dir, params View[] views)
         {
-            var array = new BoxView[4];
+            /* 各BoxViewのX,Y座標格納する構造体を列挙するリスト */
+            var list = new List<BoxView>();
 
-            for (var i = 0; i < 4; i++)
+            for (var i = 0; i < 5; i++)
             {
+                /* 線の役割を持ったBoxView生成 */
                 var box = new BoxView
                 {
                     BackgroundColor = Color.Black,
-                    WidthRequest = 0,
-                    HeightRequest = 0,
+                    IsVisible = i < 4,
                 };
-                array[i] = box;
 
-                this.Children.Add(box);
+                list.Add(box);
+
+                /* 制約付きで子View登録 */
+                this.AppendView(box);
             }
 
-            var line = new LineCanvas.Line(array)
-            {
-                //UpView = a,
-                //DownView = b,
-            };
+            var line = views.Length == 2 ?
+                new LineCanvas.Line(views[0], views[1], list, false) :
+                new LineCanvas.Line(list, false);
+
+            line.Direct = dir;
 
             Lines.Add(line);
 
             return line;
         }
 
+        public void AppendView(View view)
+        {
+            this.Children.Add(view,
+                Constraint.RelativeToParent((p) =>
+                {
+                    return view.X;
+                }),
+                Constraint.RelativeToParent((p) =>
+                {
+                    return view.Y;
+                }),
+                Constraint.RelativeToParent((p) =>
+                {
+                    return view.Width;
+                }),
+                Constraint.RelativeToParent((p) =>
+                {
+                    return view.Height;
+                })
+            );
+        }
+
         /// <summary>
-        /// 引数で指定したViewインスタンスにつながっているLineCanvas.Lineインスタンスをすべて返す。
+        /// 引数で指定したViewインスタンスとつながっているLineCanvas.Lineインスタンスを返す。
         /// </summary>
-        /// <returns>
-        /// 引数で指定したViewインスタンスにつながっているLineCanvas.Lineインスタンスを列挙した配列。
-        /// </returns>
-        /// <param name="view">
-        /// 
-        /// </param>
+        /// <param name="view"></param>
+        /// <returns></returns>
         public LineCanvas.Line[] SearchLines(View view)
         {
             return Lines.Where(l => view == l.PreviousView || view == l.BehideView)
                         .Select(l => l)
                         .ToArray();
+        }
+
+        /// <summary>
+        /// 指定されたViewインスタンスにつながっているLineCanvas.Lineインスタンスを削除する。
+        /// </summary>
+        /// <param name="view">削除するViewインスタンス。</param>
+        public void DeleteLine(View view)
+        {
+            var lines = SearchLines(view);
+
+            DeleteLine(lines);
+        }
+
+        /// <summary>
+        /// 引数で渡されたLineCanvas.Lineインスタンスと一致するインスタンスを
+        /// フィールドLinesから削除し、
+        /// 線の描画用に使用していたBoxViewインスタンスをレイアウトから消す
+        /// </summary>
+        /// <param name="lines">削除するLineCanvas.Lineインスタンス。</param>
+        public void DeleteLine(params LineCanvas.Line[] lines)
+        {
+            foreach (var line in lines)
+            {
+                var list = line.Lines;
+
+                foreach (var box in list)
+                {
+                    this.Children.Remove(box);
+                }
+
+                Lines.Remove(line);
+            }
         }
 
         /// <summary>
@@ -153,75 +179,85 @@ namespace LearningAlgo
             /// <summary>
             /// 線の幅。
             /// </summary>
-            private const int LINEPIXEL = 2;
+            private const int linePixcel = 2;
 
             /// <summary>
             /// インスタンスのマージン。
             /// </summary>
-            private const int VIEWMARGIN = 20;
+            private const int viewMargin = 20;
 
             /// <summary>
-            /// <seealso cref="DrawTail" />
-            /// で描画したBoxViewを管理する配列。
+            /// 描画する線の出発点とつなげるViewインスタンス。
             /// </summary>
-            public BoxView[] TailLines = new BoxView[5];
+            public View PreviousView;
 
             /// <summary>
-            /// <seealso cref="DrawSide"/>
-            /// で描画したBoxViewを管理する配列。
+            /// 描画する線の末尾とつなげるViewインスタンス。
             /// </summary>
-            public BoxView[] SideLines = new BoxView[4];
+            public View BehideView;
+
+            /// <summary>
+            /// 描画用BoxViewを管理するリスト。
+            /// </summary>
+            public List<BoxView> Lines;
 
             /// <summary>
             /// <para><seealso cref="DrawTail" />か</para>
             /// <para><seealso cref="DrawSide"/></para>
             /// のどちらかで描画したかを判定する。
+            /// <para>真ならTail方式。偽ならSide方式が適応される。</para>
             /// </summary>
-            public bool WhichDraw;
-
-            public View PreviousView;
-
-            public View BehideView;
-
-            /// <summary>
-            /// 線のX,Y座標を格納した構造体を列挙したリスト
-            /// </summary>
-            public List<LineCanvas.LineBounds> BoundsList;
+            private bool WhichDraw;
 
             /// <summary>
             /// 方向フラグ。<seealso cref="DrawSide" />で使用する。
             /// </summary>
-            public bool Direct { get; set; }
+            public bool Direct;
 
-            public Line(BoxView[] args)
+            /// <summary>
+            /// コンストラクタ。
+            /// 描画用BoxViewを代入する。
+            /// </summary>
+            /// <param name="args">線を表現するBoxViewインスタンス</param>
+            public Line(List<BoxView> args, bool which)
             {
-                if (args.Length == 5)
-                {
-                    TailLines = args;
-                    WhichDraw = true;
-                }
-                else if (args.Length == 4)
-                {
-                    SideLines = args;
-                }
-            }
+                WhichDraw = true;
 
-            public void Draw()
-            {
-                Draw(PreviousView, BehideView);    
+                Lines = args;
             }
 
             /// <summary>
+            /// コンストラクタのオーバーロード。
+            /// <para><seealso cref="PreviousView" />と</para>
+            /// <para><seealso cref="BehideView" /></para>
+            /// に引数を代入する。
+            /// </summary>
+            /// <param name="a">描画する線の出発点とつなげるViewインスタンス</param>
+            /// <param name="b">描画する線の末尾とつなげるViewインスタンス</param>
+            /// <param name="args">線を表現するBoxViewインスタンス</param>
+            public Line(View a, View b, List<BoxView> args, bool which) : this(args, which)
+            {
+                PreviousView = a;
+                BehideView = b;
+            }
+
+            /// <summary>
+            /// <para><seealso cref="Draw(View, View)" />のオーバーロード。</para>
+            /// フィールドを使用して線を描画する。
+            /// </summary>
+            public void Draw()
+            {
+                Draw(PreviousView, BehideView);
+            }
+
+            /// <summary>
+            /// 引数で指定した2つViewインスタンスを
             /// <para><seealso cref="DrawTail" /></para>
             /// <para><seealso cref="DrawSide"/></para>
             /// のどちらかで線を描画するためのフロント。
             /// </summary>
-            /// <param name="a">
-            /// 線でつなぐViewインスタンス。
-            /// </param>
-            /// <param name="b">
-            /// 線でつなぐViewインスタンス。
-            /// </param>
+            /// <param name="a">描画する線の出発点とつなげるViewインスタンス</param>
+            /// <param name="b">描画する線の末尾とつなげるViewインスタンス</param>
             public void Draw(View a, View b)
             {
                 if (WhichDraw)
@@ -237,28 +273,24 @@ namespace LearningAlgo
             /// <summary>
             /// しっぽから頭をつなぐ線を描画する。
             /// </summary>
-            /// <param name="a">
-            /// しっぽから線を描画するViewインスタンス。
-            /// </param>
-            /// <param name="b">
-            /// 頭に線をつなぐViewインスタンス。
-            /// </param>
+            /// <param name="a">しっぽから線を描画するViewインスタンス。</param>
+            /// <param name="b">頭に線をつなぐViewインスタンス。</param>
             public void DrawTail(View a, View b)
             {
                 /* AインスタンスのしっぽのY座標を取得 */
-                var aty = a.TranslationY + a.Height;
+                var aty = a.Y + a.Height;
 
                 /* Bインスタンスの頭のY座標を取得 */
-                var bhy = b.TranslationY;
+                var bhy = b.Y;
 
                 /* 両インスタンスの中心のX座標を取得 */
-                var acx = a.TranslationX + a.Width / 2;
-                var bcx = b.TranslationX + b.Width / 2;
+                var acx = a.X + a.Width / 2;
+                var bcx = b.X + b.Width / 2;
 
                 /* 位置関係を判定 */
-                if (bhy - aty > VIEWMARGIN)
+                if (bhy - aty > viewMargin)
                 {
-                    /* ======== パターンa,bの描画 ======== */
+                    /* ================ パターンa,bの描画 ================ */
 
                     /* 両インスタンスの間隔を計算 */
                     var both = (bhy - aty) / 2;
@@ -266,56 +298,66 @@ namespace LearningAlgo
                     var same = acx - bcx == 0;
 
                     /* 線の描画 */
-                    var box1 = TailLines[0];
-                    box1.TranslationX = acx;
-                    box1.TranslationY = aty;
-                    box1.WidthRequest = LINEPIXEL;
-                    box1.HeightRequest = same ? bhy - aty : both;
-
+                    var box1 = Lines[0];
                     box1.IsVisible = true;
-                    // box1.LayoutTo(new Rectangle(acx, aty, LINEPIXEL, same ? bhy - aty : both), 0);
 
-                    var box2 = TailLines[1];
+                    var box2 = Lines[1];
                     box2.IsVisible = false;
 
-                    var box3 = TailLines[2];
+                    var box3 = Lines[2];
 
-                    var box4 = TailLines[3];
+                    var box4 = Lines[3];
                     box4.IsVisible = false;
 
-                    var box5 = TailLines[4];
+                    var box5 = Lines[4];
 
                     if (same)
                     {
+                        Move(box1,
+                            acx - linePixcel / 2,
+                            aty,
+                            linePixcel,
+                            bhy - aty - linePixcel / 2
+                        );
+
                         box3.IsVisible = false;
 
                         box5.IsVisible = false;
                     }
                     else
                     {
-                        box3.TranslationX = Math.Min(acx, bcx);
-                        box3.TranslationY = aty + both;
-                        box3.WidthRequest = Math.Abs(bcx - acx);
-                        box3.HeightRequest = LINEPIXEL;
+                        Move(box1,
+                            acx - linePixcel / 2,
+                            aty,
+                            linePixcel,
+                            both - linePixcel / 2
+                        );
 
                         box3.IsVisible = true;
-                        // box3.LayoutTo(new Rectangle(Math.Min(acx, bcx), aty + both, Math.Abs(bcx - acx), LINEPIXEL), 0);
 
-                        box5.TranslationX = bcx;
-                        box5.TranslationY = bhy - both;
-                        box5.WidthRequest = LINEPIXEL;
-                        box5.HeightRequest = both;
+                        Move(box3,
+                            Math.Min(acx, bcx) - linePixcel / 2,
+                            aty + both - linePixcel / 2,
+                            Math.Abs(bcx - acx) + linePixcel,
+                            linePixcel
+                        );
 
                         box5.IsVisible = true;
-                        // box5.LayoutTo(new Rectangle(bcx, bhy - both, LINEPIXEL, both), 0);
+
+                        Move(box5,
+                            bcx - linePixcel / 2,
+                            bhy - both + linePixcel / 2,
+                            Math.Abs(bcx - acx) + linePixcel,
+                            linePixcel
+                        );
                     }
                 }
                 else
                 {
-                    /* ======== c,dパターンの描画 ======== */
+                    /* ================ c,dパターンの描画 ================ */
 
                     /* Bインスタンスの頭のX座標取得 */
-                    var bhx = b.TranslationX;
+                    var bhx = b.X;
 
                     /* 両インスタンスの間のX座標 */
                     var bothx = Math.Min(bcx, acx) + Math.Abs(bcx - acx) / 2;
@@ -323,148 +365,180 @@ namespace LearningAlgo
                     /* 両インスタンスのしっぽの位置関係を計算 */
                     var diy = bhy + b.Height - aty;
 
-                    var box1 = TailLines[0];
-                    box1.TranslationX = acx;
-                    box1.TranslationY = aty;
-                    box1.WidthRequest = LINEPIXEL;
-                    box1.HeightRequest = VIEWMARGIN;
+                    var box1 = Lines[0];
                     box1.IsVisible = true;
+
+                    Move(box1,
+                        acx - linePixcel / 2,
+                        aty,
+                        linePixcel,
+                        viewMargin
+                    );
 
                     /* 両インスタンスの領域の差分の絶対値を計算 */
                     var abs = Math.Abs(bcx - acx);
 
                     /* box2の幅を計算 */
-                    var box2w = abs - a.Width / 2 - b.Width / 2 > VIEWMARGIN * 2 ? abs / 2 : abs + b.Width / 2 + VIEWMARGIN;
+                    var box2w = abs - a.Width / 2 - b.Width / 2 > viewMargin * 2 ? abs / 2 : abs + b.Width / 2 + viewMargin;
 
-                    var box2 = TailLines[1];
-                    box2.TranslationX = acx - (bcx - acx > 0 ? 0 : box2w);
-                    box2.TranslationY = aty + box1.HeightRequest;
-                    box2.WidthRequest = box2w;
-                    box2.HeightRequest = LINEPIXEL;
+                    var box2 = Lines[1];
                     box2.IsVisible = true;
 
-                    /* box3のX座標を計算 */
-                    var box3x = acx + (bcx - acx > 0 ? box2w : -box2w);
+                    Move(box2,
+                        acx - (bcx - acx > 0 ? 0 : box2w) - linePixcel / 2,
+                        aty + box1.Height - linePixcel / 2,
+                        box2w,
+                        linePixcel
+                    );
 
-                    var box3 = TailLines[2];
-                    box3.TranslationX = box3x;
-                    box3.TranslationY = bhy - VIEWMARGIN;
-                    box3.WidthRequest = LINEPIXEL;
-                    box3.HeightRequest = aty - bhy + VIEWMARGIN * 2;
+                    /* box3のX座標を計算 */
+                    var box3x = acx + (bcx - acx > 0 ? box2w : -box2w) - linePixcel / 2;
+
+                    var box3 = Lines[2];
                     box3.IsVisible = true;
+
+                    Move(box3,
+                        box3x,
+                        bhy - viewMargin - linePixcel / 2,
+                        linePixcel,
+                        aty - bhy - viewMargin * 2
+                    );
 
                     var work = bcx - acx;
 
                     /* 両インスタンスの領域の差分を計算 */
                     var region = abs - a.Width / 2 - b.Width / 2;
 
-                    var box4 = TailLines[3];
-                    box4.TranslationX = (region > VIEWMARGIN * 2 && work <= 0) || (region <= VIEWMARGIN * 2 && work > 0) ? bcx : box3x;
-                    box4.TranslationY = bhy - VIEWMARGIN;
-                    box4.WidthRequest = Math.Abs(bcx - box3x);
-                    box4.HeightRequest = LINEPIXEL;
+                    var box4 = Lines[3];
                     box4.IsVisible = true;
 
-                    var box5 = TailLines[4];
-                    box5.TranslationX = bcx;
-                    box5.TranslationY = bhy - VIEWMARGIN + LINEPIXEL;
-                    box5.WidthRequest = LINEPIXEL;
-                    box5.HeightRequest = VIEWMARGIN;
+                    Move(box4,
+                        (region > viewMargin * 2 && work <= 0) || (region <= viewMargin * 2 && work > 0) ? bcx - linePixcel / 2 : box3x,
+                        bhy - viewMargin - linePixcel / 2,
+                        Math.Abs(bcx - box3x),
+                        linePixcel
+                    );
+
+                    var box5 = Lines[4];
                     box5.IsVisible = true;
+
+                    Move(box5,
+                        bcx,
+                        bhy - viewMargin - linePixcel / 2,
+                        linePixcel,
+                        viewMargin
+                    );
                 }
             }
 
             /// <summary>
             /// 右端または左端から頭を繋ぐ線を描画する。
             /// </summary>
-            /// <param name="a">
-            /// 右端またはに左端から線を描画するViewインスタンス。
-            /// </param>
-            /// <param name="b">
-            /// 頭に線をつなぐViewインスタンス。
-            /// </param>
-            /// <param name="dir">
-            /// 方向フラグ。
-            /// </param>
+            /// <param name="a">右端またはに左端から線を描画するViewインスタンス。</param>
+            /// <param name="b">頭に線をつなぐViewインスタンス。</param>
+            /// <param name="dir">方向フラグ。</param>
             public void DrawSide(View a, View b, bool dir = true)
             {
                 /* Aインスタンスの右端または、左端のX, Y座標取得 */
-                var aex = a.TranslationX + (dir ? a.Width : 0);
-                var aey = a.TranslationY + a.Height / 2;
+                var aex = a.X + (dir ? a.Width : 0);
+                var aey = a.Y + a.Height / 2;
 
                 /* Bインスタンスの中心のX座標取得 */
-                var bcx = b.TranslationX + b.Width / 2;
+                var bcx = b.X + b.Width / 2;
 
                 /* Bインスタンスの頭のY座標を取得 */
-                var bhy = b.TranslationY;
+                var bhy = b.Y;
 
-                if (bhy - aey > VIEWMARGIN)
+                if (bhy - aey > viewMargin)
                 {
-                    /* ======== e,fパターンの描画 ======== */
+                    /* ================ e,fパターンの描画 ================ */
 
                     /* Aインスタンスの中心のX座標を計算 */
-                    var acx = a.TranslationX + a.Width / 2;
+                    var acx = a.X + a.Width / 2;
 
                     var work = aex - bcx;
 
                     /* Aインスタンスの端とBインスタンスの中心のX座標の差分を計算 */
-                    var border = aex + (dir ? 1 : -1) * VIEWMARGIN - bcx;
+                    var border = aex + (dir ? 1 : -1) * viewMargin - bcx;
 
                     /* 両インスタンスの領域の差分を計算 */
                     var region = Math.Abs(bcx - aex) + (bcx - aex > 0 ? -1 : 1) * (b.Width / 2);
 
-                    var box1 = SideLines[0];
-                    box1.TranslationY = aey;
-                    box1.HeightRequest = LINEPIXEL;
+                    var box1 = Lines[0];
                     box1.IsVisible = true;
 
-                    var box2 = SideLines[1];
+                    var box2 = Lines[1];
 
-                    var box3 = SideLines[2];
+                    var box3 = Lines[2];
 
-                    var box4 = SideLines[3];
-                    box4.TranslationX = bcx;
-                    box4.WidthRequest = LINEPIXEL;
+                    var box4 = Lines[3];
+                    box4.IsVisible = true;
 
                     if ((dir && border > 0) || (!dir && border <= 0))
                     {
-                        box1.TranslationX = aex - (dir ? 0 : VIEWMARGIN);
-                        box1.WidthRequest = VIEWMARGIN;
+                        Move(box1,
+                            aex - (dir ? 0 : viewMargin),
+                            aey - linePixcel / 2,
+                            linePixcel,
+                            viewMargin
+                        );
 
                         var both = (bhy - aey + a.Height / 2) / 2;
 
-                        box2.TranslationX = aex + (dir ? 1 : -1) * VIEWMARGIN;
-                        box2.TranslationY = aey;
-                        box2.WidthRequest = LINEPIXEL;
-                        box2.HeightRequest = both;
+                        box2.IsVisible = true;
 
-                        var box3w = Math.Abs(bcx - aex) + VIEWMARGIN;
+                        Move(box2,
+                            aex + (dir ? 1 : -1) * viewMargin - linePixcel / 2,
+                            aey - linePixcel / 2,
+                            linePixcel,
+                            both
+                        );
 
-                        box3.TranslationX = bcx - (work > 0 ? 0 : box3w);
-                        box3.TranslationY = aey + both;
-                        box3.WidthRequest = Math.Abs(bcx - aex) + VIEWMARGIN;
-                        box3.HeightRequest = LINEPIXEL;
+                        var box3w = Math.Abs(bcx - aex) + viewMargin;
 
-                        box4.TranslationY = aey + both;
-                        box4.HeightRequest = bhy - (aey + both);
+                        box3.IsVisible = true;
+
+                        Move(box3,
+                            bcx - (work > 0 ? 0 : box3w) - linePixcel / 2,
+                            aey + both - linePixcel / 2,
+                            Math.Abs(bcx - aex) + viewMargin,
+                            linePixcel
+                        );
+
+                        Move(box4,
+                            bcx - linePixcel / 2,
+                            aey + both - linePixcel / 2,
+                            linePixcel,
+                            bhy - (aey + both)
+                        );
                     }
                     else
                     {
-                        box1.TranslationX = aex - (dir ? 0 : work);
-                        box1.WidthRequest = Math.Abs(work);
+                        Move(box1,
+                            aex - (dir ? 0 : work),
+                            aey - linePixcel / 2,
+                            Math.Abs(work),
+                            viewMargin
+                        );
 
                         box2.IsVisible = false;
 
                         box3.IsVisible = false;
 
-                        box4.TranslationY = aey;
-                        box4.HeightRequest = bhy - aey;
+                        Move(box4,
+                            bcx - linePixcel / 2,
+                            aey - linePixcel / 2,
+                            linePixcel,
+                            bhy - aey
+                        );
                     }
                 }
                 else
                 {
+                    /* ================ g,hパターンの描画 ================ */
+
                     /* Aインスタンスの中心のX座標を取計算 */
-                    var acx = a.TranslationX + a.Width / 2;
+                    var acx = a.X + a.Width / 2;
 
                     /* 両インスタンスの領域の差分の絶対値を計算 */
                     var abs = Math.Abs(bcx - acx);
@@ -475,66 +549,104 @@ namespace LearningAlgo
                     /* box1wの計算 */
                     if ((dir && bcx - acx <= 0) || (!dir && bcx - acx > 0))
                     {
-                        box1w = VIEWMARGIN;
+                        box1w = viewMargin;
                     }
                     else
                     {
-                        if (abs - a.Width / 2 - b.Width / 2 > VIEWMARGIN * 2)
+                        if (abs - a.Width / 2 - b.Width / 2 > viewMargin * 2)
                         {
                             box1w = abs / 2;
                         }
                         else
                         {
-                            box1w = abs + b.Width / 2 + VIEWMARGIN;
+                            box1w = abs + b.Width / 2 + viewMargin;
                         }
 
                         box1w -= a.Width / 2;
                     }
 
-                    var box1 = SideLines[0];
-                    box1.TranslationX = aex - (dir ? 0 : box1w);
-                    box1.TranslationY = aey;
-                    box1.WidthRequest = box1w;
-                    box1.HeightRequest = LINEPIXEL;
+                    var box1 = Lines[0];
+                    box1.IsVisible = true;
+
+                    Move(box1,
+                        aex - (dir ? 0 : box1w),
+                        aey - linePixcel / 2,
+                        box1w,
+                        linePixcel
+                    );
 
                     /* box2のX座標を計算 */
-                    var box2x = aex + (dir ? box1w : -box1w);
+                    var box2x = aex + (dir ? box1w : -box1w) - linePixcel / 2;
 
-                    var box2 = SideLines[1];
-                    box2.TranslationX = box2x;
-                    box2.TranslationY = bhy - VIEWMARGIN;
-                    box2.WidthRequest = LINEPIXEL;
-                    box2.HeightRequest = aey - bhy + VIEWMARGIN;
+                    var box2 = Lines[1];
                     box2.IsVisible = true;
+
+                    Move(box2,
+                        box2x,
+                        bhy - viewMargin - linePixcel / 2,
+                        linePixcel,
+                        aey - bhy + viewMargin
+                    );
 
                     var work = bcx - acx;
 
                     /* 両インスタンスの領域の差分を計算 */
                     var region = Math.Abs(bcx - aex) + (bcx - aex > 0 ? -1 : 1) * (b.Width / 2);
 
-                    var box3 = SideLines[2];
-                    box3.TranslationX = (region > VIEWMARGIN * 2) ? bcx : box2x;
-                    box3.TranslationY = bhy - VIEWMARGIN;
-                    box3.WidthRequest = Math.Abs(bcx - box2x);
-                    box3.HeightRequest = LINEPIXEL;
+                    var box3 = Lines[2];
                     box3.IsVisible = true;
 
-                    var box4 = SideLines[3];
-                    box4.TranslationX = bcx;
-                    box4.TranslationY = bhy - VIEWMARGIN;
-                    box4.WidthRequest = LINEPIXEL;
-                    box4.HeightRequest = VIEWMARGIN;
+                    Move(box3,
+                        (region > viewMargin * 2) ? bcx - linePixcel / 2 : box2x,
+                        bhy - viewMargin - linePixcel / 2,
+                        Math.Abs(bcx - box2x),
+                        linePixcel
+                    );
+
+                    var box4 = Lines[3];
+                    box4.IsVisible = true;
+
+                    Move(box3,
+                        bcx - linePixcel / 2,
+                        bhy - viewMargin - linePixcel / 2,
+                        linePixcel,
+                        viewMargin
+                    );
                 }
             }
-        }
 
-        /// <summary>
-        /// 描画した線のX,Y座標を格納する構造体
-        /// </summary>
-        public class LineBounds
-        {
-            public double LineX;
-            public double LineY;
+            /// <summary>
+            /// 線の種類を変更する。
+            /// </summary>
+            public void SwitchLine()
+            {
+                if (WhichDraw)
+                {
+                    Lines[4].IsVisible = false;
+                }
+
+                /* 種類フラグ反転 */
+                WhichDraw = !WhichDraw;
+
+                /* 描画メソッドを呼び出して線の更新 */
+                Draw();
+            }
+
+            /// <summary>
+            /// 非同期でViewインスタンスを動かす。
+            /// </summary>
+            /// <param name="view">指定した座標まで動かすViewインスタンス。</param>
+            /// <param name="bounds">目的地の座標とViewインスタンスのサイズ。</param>
+            private async void Move(View view, params double[] bounds)
+            {
+                var rc = view.Bounds;
+                rc.X = bounds[0];
+                rc.Y = bounds[1];
+                rc.Width = bounds[2];
+                rc.Height = bounds[3];
+
+                await view.LayoutTo(rc, 0);
+            }
         }
     }
 }

@@ -7,20 +7,20 @@
         <AbsoluteLayout BackgroundColor="#e5f0ff"
                         x:Name="MainLayout">
             
-            <ScrollView x:Name="FlowScroller"
+<!--            <ScrollView x:Name="FlowScroller"
                         Orientation="Vertical">
                 <ScrollView.Content>
-<!--                    <AbsoluteLayout x:Name="FlowPanel" BackgroundColor="Fuchsia">
+                    <AbsoluteLayout x:Name="FlowPanel" BackgroundColor="Fuchsia">
                         <Button Text="aaaaaaaaaaa" 
                 Clicked="Clicked3" />
-                    </AbsoluteLayout>-->
+                    </AbsoluteLayout>
 
                     <local:LineCanvas x:Name="Canvas">
                         <Button Text="aaaaaaaaaaa" 
                                 Clicked="Clicked3"/>
                     </local:LineCanvas>
                 </ScrollView.Content>
-            </ScrollView>
+            </ScrollView> -->
             <StackLayout x:Name="Footer"
                          BackgroundColor="#23455622"
                          Orientation="Horizontal"
@@ -36,6 +36,13 @@
                 <Button x:Name="TraceDo"
                         Text="トレースの呼び出しボタン"
                         Clicked="TraceDoCliked"/>
+                <Button x:Name="LineConection"
+                        Text="OnOFFuuu"
+                        Clicked="LineConectionClicked"/>
+                <Button x:Name="SaveButton"
+                        Text="Save"
+                        Clicked="SaveClicked"/>
+                
             </StackLayout>
 
             
