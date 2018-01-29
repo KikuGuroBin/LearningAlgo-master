@@ -41,6 +41,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)MyLayout.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MyLabel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)LineCanvas.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)StartPanel.xaml.cs">
+      <DependentUpon>StartPanel.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)MainPage.xaml">
@@ -60,6 +63,10 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)MasterPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)StartPanel.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

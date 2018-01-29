@@ -17,6 +17,8 @@ namespace LearningAlgo
 
             MainPage = new NavigationPage(new FlowPage());
 
+            //MainPage = new NavigationPage(new StartPanel());
+
             //MainPage = new NavigationPage(new LineCanvasDemo());
 
             //MainPage = new NavigationPage(new Test1());

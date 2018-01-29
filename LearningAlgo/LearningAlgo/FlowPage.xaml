@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:LearningAlgo;assembly:LearningAlgo"
              x:Class="LearningAlgo.FlowPage">
     <ContentPage.Content>
-        <AbsoluteLayout BackgroundColor="#e5f0ff"
+        <RelativeLayout BackgroundColor="#e5f0ff"
                         x:Name="MainLayout">
             
 <!--            <ScrollView x:Name="FlowScroller"
@@ -22,36 +22,40 @@
                 </ScrollView.Content>
             </ScrollView> -->
             <StackLayout x:Name="Footer"
-                         BackgroundColor="#23455622"
+                         BackgroundColor="#234556aa"
                          Orientation="Horizontal"
                          VerticalOptions="FillAndExpand"
                          HorizontalOptions="FillAndExpand">
-                <Button TextColor="#12a7eb"
-                        WidthRequest="50"
-                        Text="SideP"
-                        Clicked="SidePanel"/>
-                <Button x:Name="ShowDialog"
+                <Button Margin="10, 0, 0, 0"
+                        WidthRequest="70"
+                        Clicked="SidePanel"
+                        Image="Menu.png"/>
+                <!--<Button x:Name="ShowDialog"
                         Text="Show!!"
-                        Clicked="ShowDialogClicked"/>
-                <Button x:Name="TraceDo"
-                        Text="トレースの呼び出しボタン"
-                        Clicked="TraceDoCliked"/>
-                <Button x:Name="LineConection"
-                        Text="OnOFFuuu"
-                        Clicked="LineConectionClicked"/>
-                <Button x:Name="SaveButton"
-                        Text="Save"
-                        Clicked="SaveClicked"/>
-                
+                        Clicked="ShowDialogClicked"/>-->
+                <Button Margin="300, 0, 0, 0"
+                        WidthRequest="70"
+                        x:Name="TraceDo"
+                        Clicked="TraceDoCliked"
+                        Image="StartTrue.png"/>
+                <Button WidthRequest="70"
+                        x:Name="LineConection"
+                        Clicked="LineConectionClicked"
+                        Image="Draw.png"/>
+                <Button WidthRequest="70"
+                        x:Name="SaveButton"
+                        Clicked="SaveClicked"
+                        Image="Save.png"/>
             </StackLayout>
 
             
             <StackLayout VerticalOptions="FillAndExpand"
                 BackgroundColor="#4696e5"
-                TranslationX="300"
-                WidthRequest="100">
+                TranslationX="835"
+                WidthRequest="190"
+                HeightRequest="634">
                 <ScrollView x:Name="PrisetScroll">  
-                    <StackLayout  x:Name="Priset"/>
+                    <StackLayout x:Name="Priset"/>
                 </ScrollView>
                     <Label x:Name="ILabel"
                            Text="i:   0"/>
@@ -158,6 +162,6 @@
                 </BoxView.GestureRecognizers>
             </BoxView>
             <local:KeyboardDialog x:Name="Dialog" BackgroundColor="Black"/>
-        </AbsoluteLayout>
+        </RelativeLayout>
     </ContentPage.Content>
 </ContentPage>

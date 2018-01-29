@@ -26,6 +26,11 @@ namespace LearningAlgo
         private const int IMAGESIZE = 100;
 
         /// <summary>
+        /// 線を描画するレイアウト
+        /// </summary>
+        public LineCanvas Canvas;
+
+        /// <summary>
         /// カスタムダイアログの表示アニメーションを取り扱う
         /// </summary>
         private ImitationDialog ImitationDialog;
@@ -109,6 +114,10 @@ namespace LearningAlgo
 
             /* プリセット一覧をロードするメソッド */
             PresetLoad();
+
+            InitializeCanvas();
+
+
         }
 
         public FlowPage(string s){
@@ -200,7 +209,7 @@ namespace LearningAlgo
             };
 
             /* 制約付きでフィールドMainにCanvas追加 */
-            Main.Children.Add(Canvas,
+            MainLayout.Children.Add(Canvas,
                 Constraint.RelativeToParent((p) =>
                 {
                     return Canvas.X;
@@ -220,10 +229,10 @@ namespace LearningAlgo
             );
 
             var rc = Canvas.Bounds;
-            rc.X += 20;
-            rc.Y += 60;
-            rc.Width += 100;
-            rc.Height += 100;
+            rc.X += 50;
+            rc.Y += 100;
+            rc.Width += 50;
+            rc.Height += 50;
             Canvas.LayoutTo(rc, 0);
         }
 
@@ -249,24 +258,6 @@ namespace LearningAlgo
         }
 
         /// <summary>
-        /// フローチャートのパネルをスライドさせる
-        /// </summary>
-        private async void FlowScrollerSlide()
-        {
-            /* フラグによってスライドの方向を変える */
-            if (SidePaneShowing)
-            {
-                /* 右へスライド */
-                await FlowScroller.TranslateTo(Width / 4, 0, 200, Easing.CubicIn);
-            }
-            else
-            {
-                /* 左へスライド */
-                await FlowScroller.TranslateTo(0, 0, 200, Easing.CubicOut);
-            }
-        }
-
-        /// <summary>
         /// サイドラベルタップイベント
         /// </summary>
         /// <param name="sender">Sender.</param>
@@ -274,7 +265,6 @@ namespace LearningAlgo
         private void SidePanel(object sender, EventArgs args)
         {
             SidePanelShow();
-            FlowScrollerSlide();
         }
 
         private void ShowDialogClicked(object sender, EventArgs args)
@@ -330,7 +320,7 @@ namespace LearningAlgo
             /* フローチャートのパネルに画像を追加 */
             var rc = myLayout.Bounds;
 
-            Canvas.AppendView(myLayout);
+            CanvasAppend(myLayout, 0, ImagePosition, rc.Width, rc.Height);
             myLayout.LayoutTo(new Rectangle(0, ImagePosition, rc.Width, rc.Height), 0);
 
             /*レイアウト内画像*/
@@ -394,6 +384,65 @@ namespace LearningAlgo
 
         }
 
+        /* index.CanvasAppend */
+        /// <summary>
+        /// フィールドCanvasへのViewの追加。
+        /// </summary>
+        /// <param name="view">Canvasに追加するViewインスタンス。</param>
+        /// <param name="x">ViewインスタンスのX座標。</param>
+        /// <param name="y">ViewインスタンスのY座標。</param>
+        /// <param name="width">Viewインスタンスの幅。</param>
+        /// <param name="height">Viewインスタンスの高さ。</param>
+        private async void CanvasAppend(View view, double x = 0, double y = 0, double width = 0, double height = 0)
+        {
+            /* 制約付きでViewを追加 */
+            Canvas.AppendView(view);
+
+            /* 引数で指定した座標、サイズにする */
+            var rc = view.Bounds;
+            rc.X = x;
+            rc.Y = y;
+            rc.Width = width;
+            rc.Height = height;
+            await view.LayoutTo(rc, 0);
+
+            rc = Canvas.Bounds;
+
+            /* Canvasの拡張 */
+            if (rc.Width < x + width)
+            {
+                rc.Width = x + width;
+            }
+
+            if (rc.Height < y + height)
+            {
+                rc.Height = y + height;
+            }
+
+            await Canvas.LayoutTo(rc, 0);
+        }
+
+        /* index.MoveCanvas */
+        /// <summary>
+        /// フィールドCanvasを非同期で動かす。
+        /// </summary>
+        /// <param name="x">Canvasの新しいX座標。</param>
+        /// <param name="y">Canvasの新しいY座標。</param>
+        private async void MoveCanvas(double x, double y)
+        {
+            var rc = Canvas.Bounds;
+            rc.X += x;
+            rc.Y += y;
+            await Canvas.LayoutTo(rc, 0);
+        }
+
+        private async void MoveView(View view, double x = 0, double y = 0){
+            var rc = view.Bounds;
+            rc.X += x;
+            rc.Y += y;
+            await view.LayoutTo(rc, 0);
+        }
+
         private void LayoutDrug(object sender, DrugEventArgs args)
         {
             var layout = sender as MyLayout;
@@ -401,7 +450,7 @@ namespace LearningAlgo
             if(!LineConnectionflug)
             {
                 /* Viewの移動 */
-                layout.TranslateTo(layout.TranslationX + args.X, layout.TranslationY + args.Y);
+                MoveView(layout, args.X, args.Y);
 
                 /* 動かしたViewがつながっているLineCanvas.Lineインスタンスの一覧を取得 */
                 var lines = Canvas.SearchLines(layout);
@@ -410,6 +459,21 @@ namespace LearningAlgo
                 {
                     l.Draw();
                 }
+
+                var rc = Canvas.Bounds;
+
+                /* Canvasの拡張 */
+                if (rc.Width < layout.X + layout.Width)
+                {
+                    rc.Width = layout.X + layout.Width;
+                }
+
+                if (rc.Height < layout.Y + layout.Height)
+                {
+                    rc.Height = layout.Y + layout.Height;
+                }
+
+                Canvas.LayoutTo(rc, 0);
 
                 DbInsertListTb2[layout.PartsId].position_x = "";
                 DbInsertListTb2[layout.PartsId].position_y = "";
@@ -532,7 +596,6 @@ namespace LearningAlgo
                 /* ドラッグ可能なレイアウト生成 */
                 var myLayout = new MyLayout
                 {
-                    
                     BackgroundColor = Color.Azure,
                     WidthRequest = IMAGESIZE,
                     HeightRequest = IMAGESIZE,
@@ -544,11 +607,7 @@ namespace LearningAlgo
                 var rc = new Rectangle(x, work, IMAGESIZE, IMAGESIZE);
 
                 /* フローチャートのパネルに画像を追加 */
-                Canvas.AppendView(myLayout);
-                myLayout.LayoutTo(new Rectangle(0, 0, IMAGESIZE, IMAGESIZE), 0);
-
-                myLayout.TranslationX = x;
-                myLayout.TranslationY = work;
+                CanvasAppend(myLayout, x, work, IMAGESIZE, IMAGESIZE);
 
                 /*レイアウト内画像*/
                 var myImage = new Image
